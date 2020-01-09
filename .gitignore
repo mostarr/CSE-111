@@ -30,3 +30,9 @@
 *.exe
 *.out
 *.app
+
+countwords/.project
+
+countwords/.cproject
+
+countwords/build/make.debug.linux.x86_64/
