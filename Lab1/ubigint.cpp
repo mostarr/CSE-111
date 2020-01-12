@@ -55,13 +55,17 @@ void ubigint::trim() {
 
 ubigint ubigint::operator+ (const ubigint& that) const {
 	ubigvalue_t sum;
-	auto thisIt = ubig_value.end();
-	auto thatIt = that.ubig_value.end();
+	auto thisIt = ubig_value.begin();
+	auto thatIt = that.ubig_value.begin();
 	int carry = 0;
-	for ( ; thisIt != ubig_value.begin(); --thisIt ){
-		int digitSum = static_cast<int>(*thisIt) + static_cast<int>(*(--thatIt)) + carry;
+	for ( ; thisIt != ubig_value.end(); ++thisIt ){
+
+		int digitSum = static_cast<int>(*thisIt) + static_cast<int>(*(thatIt++)) + carry;
+
+
+
 		if( digitSum >= 10) {
-			carry = digitSum - (digitSum%10);
+			carry = digitSum - (digitSum%10) - 10;
 			digitSum = digitSum/10;
 		}else{
 			carry = 0;
@@ -76,12 +80,16 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 ubigint ubigint::operator- (const ubigint& that) const {
    if (*this < that) throw domain_error ("ubigint::operator-(a<b)");
    ubigvalue_t  diff;
-	auto thisIt = ubig_value.end();
-	auto thatIt = that.ubig_value.end();
+	auto thisIt = ubig_value.begin();
+	auto thatIt = that.ubig_value.begin();
 	int carry = 0;
 
-	for ( ; thisIt != ubig_value.begin(); --thisIt ){
-		int digitDiff = static_cast<int>(*thisIt) - static_cast<int>(*(--thatIt)) + carry;
+	for ( ; thisIt != ubig_value.end(); ++thisIt ){
+
+		int digitDiff = static_cast<int>(*thisIt) - static_cast<int>(*(thatIt++)) + carry;
+
+
+
 		if (digitDiff < 0) {
 			digitDiff += 10;
 			carry = -1;
@@ -92,6 +100,7 @@ ubigint ubigint::operator- (const ubigint& that) const {
 	}
 	ubigint returnValue;
 	returnValue.ubig_value = diff;
+	returnValue.trim();
 	return returnValue;
 }
 
@@ -131,10 +140,10 @@ ubigint ubigint::operator* (const ubigint& that) const {
 }
 
 void ubigint::multiply_by_2() {
-	ubigvalue_t prod;
-	auto thisIt = ubig_value.end();
+	ubigvalue_t prod(ubig_value.size() + 1);
+	auto thisIt = ubig_value.rbegin();
 	int carry = 0;
-	for ( ; thisIt != ubig_value.begin(); --thisIt ){
+	for ( ; thisIt != ubig_value.rend(); ++thisIt ){
 		int digitProd = prod.back() + (static_cast<int>(*thisIt) * 2) + carry;
 		prod.push_back(static_cast<unsigned char>(digitProd%10));
 		carry = trunc(digitProd/10);
@@ -173,6 +182,7 @@ quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
    ubigint remainder {dividend}; // left operand, dividend
    while (divisor < remainder) {
       divisor.multiply_by_2();
+
       power_of_2.multiply_by_2();
    }
    while (power_of_2 > zero) {

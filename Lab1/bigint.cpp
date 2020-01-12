@@ -33,9 +33,14 @@ bigint bigint::operator- () const {
 }
 
 bigint bigint::operator+ (const bigint& that) const {
-   ubigint result = uvalue + that.uvalue;
-   return result;
+	if(uvalue> that.uvalue){
+		return ubigint (uvalue + that.uvalue);
+	}else{
+		return ubigint (that.uvalue + uvalue);
+	}
+//   return result;
 }
+
 
 bigint bigint::operator- (const bigint& that) const {
 	bigint result;

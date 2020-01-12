@@ -129,43 +129,43 @@ void scan_options (int argc, char** argv) {
 int main (int argc, char** argv) {
    exec::execname (argv[0]);
    scan_options (argc, argv);
-//   bigint_stack operand_stack;
-//   scanner input;
-//   try {
-//      for (;;) {
-//         try {
-//            token lexeme = input.scan();
-//            switch (lexeme.symbol) {
-//               case tsymbol::SCANEOF:
-//                  throw ydc_quit();
-//                  break;
-//               case tsymbol::NUMBER:
-//                  operand_stack.push (bigint (lexeme.lexinfo));
-//                  break;
-//               case tsymbol::OPERATOR: {
-//                  char oper = lexeme.lexinfo[0];
-//                  do_function (operand_stack, oper);
-//                  break;
-//                  }
-//               default:
-//                  assert (false);
-//            }
-//         }catch (ydc_error& error) {
-//            cout << exec::execname() << ": " << error.what() << endl;
-//         }
-//      }
-//   }catch (ydc_quit&) {
-//      // Intentionally left empty.
-//   }
+   bigint_stack operand_stack;
+   scanner input;
+   try {
+      for (;;) {
+         try {
+            token lexeme = input.scan();
+            switch (lexeme.symbol) {
+               case tsymbol::SCANEOF:
+                  throw ydc_quit();
+                  break;
+               case tsymbol::NUMBER:
+                  operand_stack.push (bigint (lexeme.lexinfo));
+                  break;
+               case tsymbol::OPERATOR: {
+                  char oper = lexeme.lexinfo[0];
+                  do_function (operand_stack, oper);
+                  break;
+                  }
+               default:
+                  assert (false);
+            }
+         }catch (ydc_error& error) {
+            cout << exec::execname() << ": " << error.what() << endl;
+         }
+      }
+   }catch (ydc_quit&) {
+      // Intentionally left empty.
+   }
 
-   bigint test1 = 0;
-   std::cout << test1 << endl;
-
-
-   bigint test2 = 123456789;
-   std::cout << test2 << endl;
-
-   std::cout << test1*test2 << endl;
+//   bigint test1 = 20;
+//   std::cout << test1 << endl;
+//
+//
+//   bigint test2 = 2;
+//   std::cout << test2 << endl;
+//
+//   std::cout << test1/test2 << endl;
 
 
    return exec::status();
