@@ -103,7 +103,7 @@ void do_function (bigint_stack& stack, const char oper) {
 //    Options analysis:  The only option is -Dflags. 
 //
 void scan_options (int argc, char** argv) {
-   opterr = 0;
+   int opterr = 0;
    for (;;) {
       int option = getopt (argc, argv, "@:");
       if (option == EOF) break;

@@ -39,7 +39,7 @@ ubigint::ubigint (const string& that): ubig_value(0) {
       if (not isdigit (digit)) {
          throw invalid_argument ("ubigint::ubigint(" + that + ")");
       }
-      ubig_value.push_back(digit);
+      ubig_value.push_back(digit - '0');
    }
 }
 
@@ -47,6 +47,9 @@ void ubigint::trim() {
 	for ( ; ; ){
 	   if(ubig_value.back() == 0){
 		   ubig_value.pop_back();
+		   if (ubig_value.size() < 1) {
+			   return;
+		   }
 	   }else{
 		   break;
 	   }
@@ -59,10 +62,14 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 	auto thatIt = that.ubig_value.begin();
 	int carry = 0;
 	for ( ; thisIt != ubig_value.end(); ++thisIt ){
-
-		int digitSum = static_cast<int>(*thisIt) + static_cast<int>(*(thatIt++)) + carry;
-
-
+		int thatDigit;
+		if (thatIt >= that.ubig_value.end()) {
+			thatDigit = 0;
+		}
+		else {
+			thatDigit = static_cast<int>(*(thatIt++));
+		}
+		int digitSum = static_cast<int>(*thisIt) + thatDigit + carry;
 
 		if( digitSum >= 10) {
 			carry = digitSum - (digitSum%10) - 10;
@@ -74,6 +81,7 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 	}
 	ubigint returnValue;
 	returnValue.ubig_value = sum;
+	returnValue.trim();
 	return returnValue;
 }
 
@@ -85,10 +93,16 @@ ubigint ubigint::operator- (const ubigint& that) const {
 	int carry = 0;
 
 	for ( ; thisIt != ubig_value.end(); ++thisIt ){
+		int thatDigit;
+		if (thatIt >= that.ubig_value.end()) {
+			thatDigit = 0;
+		}
+		else {
+			thatDigit = static_cast<int>(*(thatIt++));
+		}
+		int digitDiff = static_cast<int>(*thisIt) - thatDigit + carry;
 
-		int digitDiff = static_cast<int>(*thisIt) - static_cast<int>(*(thatIt++)) + carry;
-
-
+		cout << digitDiff << endl;
 
 		if (digitDiff < 0) {
 			digitDiff += 10;
@@ -152,19 +166,23 @@ void ubigint::multiply_by_2() {
 }
 
 void ubigint::divide_by_2() {
+	if (ubig_value.size() < 1) {
+		return;
+	}
 	ubigvalue_t quot;
 	auto thisIt = ubig_value.begin();
 	int carry = 0;
 
-	for ( ; thisIt != ubig_value.end(); ++thisIt ){
+	for ( ; thisIt != ubig_value.end() - 1; ++thisIt ){
 	   DEBUGF ('d', "div digit: " << (static_cast<int>(*thisIt)));
-		if(static_cast<int>(*(thisIt + 1)) != 0 and static_cast<int>(*(thisIt +1 )) % 2 != 0){
+		if(static_cast<int>(*(thisIt + 1)) != 0 && static_cast<int>(*(thisIt + 1)) % 2 != 0){
 			carry = 5;
 		}else{
 			carry = 0;
 		}
 		quot.push_back(trunc((static_cast<int>(*thisIt) / 2) + carry));
 	}
+	quot.push_back(trunc((static_cast<int>(*thisIt) / 2) + carry));
 	ubig_value = quot;
 	this->trim();
 }
