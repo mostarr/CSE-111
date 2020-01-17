@@ -21,12 +21,13 @@ bigint pow (const bigint& base_arg, const bigint& exponent_arg) {
       exponent = - exponent;
    }
    while (exponent > ZERO) {
+       cout << exponent << endl;
       if (exponent % TWO == ONE) {
          result = result * base;
          exponent = exponent - 1;
       }else {
          base = base * base;
-         exponent = exponent / 2;
+        exponent.uvalue.divide_by_2();
       }
    }
    DEBUGF ('^', "result = " << result);

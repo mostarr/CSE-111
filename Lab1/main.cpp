@@ -158,14 +158,13 @@ int main (int argc, char** argv) {
       // Intentionally left empty.
    }
 
-//   bigint test1 = 20;
-//   std::cout << test1 << endl;
-//
-//
-//   bigint test2 = 2;
-//   std::cout << test2 << endl;
-//
-//   std::cout << test1/test2 << endl;
+   /*bigint test1 = 2;
+   std::cout << test1 << endl;
+
+   bigint test2 = 2;
+   std::cout << test2 << endl;
+
+   std::cout << (test1 < test2) << endl;*/
 
 
    return exec::status();
