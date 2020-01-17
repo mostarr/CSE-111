@@ -130,20 +130,26 @@ ubigint ubigint::operator* (const ubigint& that) const {
 			int digitAt = static_cast<int>(*(prod.begin() + counterIn + counterOut));
 			int subProd = (static_cast<int>(*thisIt) * static_cast<int>(*(thatIt)));
 			int digitProd = digitAt + subProd + carry;
+			cout << "digitProd: " << digitProd << endl;
+			cout << "cout: " << counterOut<< endl;
+			cout << "cin: " << counterIn << endl;
+
 
 			if(digitProd!=0){
 				prod.erase(prod.begin() + counterOut + counterIn);
-				prod.insert(prod.begin() + counterOut + counterIn,static_cast<unsigned char>(digitProd%10));
+				prod.insert(prod.begin() + counterOut + ++counterIn,static_cast<unsigned char>(digitProd%10));
 			}
-			 counterIn++;
+
+			ubigint intValue;
+			intValue.ubig_value = prod;
+			cout << "prod: " << intValue << endl;
+			 
 			carry = trunc(digitProd/10);
-
 		}
-
-		prod.insert((prod.begin() + (counterIn )+ (counterOut++)),static_cast<unsigned char>(carry));
-
-
-
+		if (carry != 0) {
+			prod.erase((prod.begin() + (counterIn)+(counterOut)));
+			prod.insert((prod.begin() + (counterIn) + (counterOut++)),static_cast<unsigned char>(carry));
+		}
 	}
 	ubigint returnValue;
 	returnValue.ubig_value = prod;
@@ -192,21 +198,29 @@ void ubigint::divide_by_2() {
 	this->trim();
 }
 
+ubigint ubigint::mod_by_2() {
+	ubigint result;
+	result = static_cast<int>(ubig_value.back()) % 2;
+	return result;
+}
+
 
  
 struct quo_rem { ubigint quotient; ubigint remainder; };
 quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
    // NOTE: udivide is a non-member function.
-	ubigint TWO = 2;
-	if (divisor_ == TWO) {
-
-	}
    ubigint divisor {divisor_};
    ubigint zero {0};
    if (divisor == zero) throw domain_error ("udivide by zero");
    ubigint power_of_2 {1};
    ubigint quotient {0};
    ubigint remainder {dividend}; // left operand, dividend
+	ubigint TWO = 2;
+	if (divisor_ == TWO) {
+		ubigint rere = remainder.mod_by_2();
+		remainder.divide_by_2();
+		return { .quotient = remainder, .remainder = rere };
+	}
    while (divisor < remainder) {
 	  divisor.multiply_by_2();
 	  power_of_2.multiply_by_2();

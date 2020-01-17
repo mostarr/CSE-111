@@ -23,6 +23,8 @@ class ubigint {
 	public:
 	  void multiply_by_2();
 	  void divide_by_2();
+	  ubigint mod_by_2();
+
 
 	  ubigint() = default; // Need default ctor as well.
 	  ubigint (unsigned long);
