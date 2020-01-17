@@ -158,13 +158,15 @@ int main (int argc, char** argv) {
       // Intentionally left empty.
    }
 
-   /*bigint test1 = 2;
+   /*bigint test1 = 20;
    std::cout << test1 << endl;
 
-   bigint test2 = 2;
+   const string twenty = "20";
+   bigint test2{ twenty };
    std::cout << test2 << endl;
 
-   std::cout << (test1 < test2) << endl;*/
+   cout << "test1 " << test1 << endl;
+   cout << "test2 " << test2 << endl;*/
 
 
    return exec::status();

@@ -13,7 +13,7 @@
 
 template <typename value>
 inline bool operator!= (const value& left, const value& right) {
-   return not (left == right); 
+   return !(left == right); 
 }
 
 template <typename value>
@@ -23,12 +23,12 @@ inline bool operator>  (const value& left, const value& right) {
 
 template <typename value>
 inline bool operator<= (const value& left, const value& right) {
-   return not (right < left);
+   return !(right < left);
 }
 
 template <typename value>
 inline bool operator>= (const value& left, const value& right) {
-   return not (left < right); 
+   return !(left < right); 
 }
 
 #endif

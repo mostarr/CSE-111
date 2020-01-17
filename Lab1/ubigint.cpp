@@ -39,14 +39,14 @@ ubigint::ubigint (const string& that): ubig_value(0) {
 	  if (!isdigit(digit)) {
 		 throw invalid_argument ("ubigint::ubigint(" + that + ")");
 	  }
-	  ubig_value.push_back(digit - '0');
+	  ubig_value.insert(ubig_value.begin(),digit - '0');
    }
 }
 
 void ubigint::trim() {
 	for ( ; ; ){
-	   if(ubig_value.front() == 0){
-			ubig_value.erase(ubig_value.begin());
+	   if(ubig_value.back() == 0){
+			ubig_value.pop_back();
 		   if (ubig_value.size() < 1) {
 			   return;
 		   }
@@ -72,12 +72,15 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 		int digitSum = static_cast<int>(*thisIt) + thatDigit + carry;
 
 		if( digitSum >= 10) {
-			carry = digitSum - (digitSum%10) - 10;
-			digitSum = digitSum/10;
+			carry = digitSum /10;
+			digitSum = digitSum%10;
 		}else{
 			carry = 0;
 		}
 		sum.push_back(static_cast<unsigned char>(digitSum));
+	}
+	if (carry != 0) {
+		sum.push_back(carry);
 	}
 	ubigint returnValue;
 	returnValue.ubig_value = sum;
@@ -88,13 +91,13 @@ ubigint ubigint::operator+ (const ubigint& that) const {
 ubigint ubigint::operator- (const ubigint& that) const {
    if (*this < that) throw domain_error ("ubigint::operator-(a<b)");
    ubigvalue_t  diff;
-	auto thisIt = ubig_value.rbegin();
-	auto thatIt = that.ubig_value.rbegin();
+	auto thisIt = ubig_value.begin();
+	auto thatIt = that.ubig_value.begin();
 	int carry = 0;
 
-	for ( ; thisIt != ubig_value.rend(); ++thisIt ){
+	for ( ; thisIt != ubig_value.end(); ++thisIt ){
 		int thatDigit;
-		if (thatIt >= that.ubig_value.rend()) {
+		if (thatIt >= that.ubig_value.end()) {
 			thatDigit = 0;
 		}
 		else {
@@ -130,26 +133,30 @@ ubigint ubigint::operator* (const ubigint& that) const {
 			int digitAt = static_cast<int>(*(prod.begin() + counterIn + counterOut));
 			int subProd = (static_cast<int>(*thisIt) * static_cast<int>(*(thatIt)));
 			int digitProd = digitAt + subProd + carry;
-			cout << "digitProd: " << digitProd << endl;
-			cout << "cout: " << counterOut<< endl;
-			cout << "cin: " << counterIn << endl;
+			
+			/*cout << "digitProd: " << digitProd << endl;
+			cout << "counterIn: " << counterIn << endl;
+			cout << "counterOut: " << counterOut << endl;
+			cout << "this: " << static_cast<int>(*thisIt) << endl;
+			cout << "that: " << static_cast<int>(*(thatIt)) << endl;*/
 
 
 			if(digitProd!=0){
 				prod.erase(prod.begin() + counterOut + counterIn);
-				prod.insert(prod.begin() + counterOut + ++counterIn,static_cast<unsigned char>(digitProd%10));
+				prod.insert(prod.begin() + counterOut + counterIn++,static_cast<unsigned char>(digitProd%10));
 			}
 
-			ubigint intValue;
+			/*ubigint intValue;
 			intValue.ubig_value = prod;
-			cout << "prod: " << intValue << endl;
+			cout << "prod: " << intValue << endl;*/
 			 
 			carry = trunc(digitProd/10);
 		}
 		if (carry != 0) {
 			prod.erase((prod.begin() + (counterIn)+(counterOut)));
-			prod.insert((prod.begin() + (counterIn) + (counterOut++)),static_cast<unsigned char>(carry));
+			prod.insert((prod.begin() + (counterIn) + (counterOut)),static_cast<unsigned char>(carry));
 		}
+		++counterOut;
 	}
 	ubigint returnValue;
 	returnValue.ubig_value = prod;
@@ -159,14 +166,23 @@ ubigint ubigint::operator* (const ubigint& that) const {
 
 void ubigint::multiply_by_2() {
 	ubigvalue_t prod(ubig_value.size() + 1);
-	auto thisIt = ubig_value.rbegin();
+	auto thisIt = ubig_value.begin();
 	int carry = 0;
-	for ( ; thisIt != ubig_value.rend(); ++thisIt ){
-		int digitProd = prod.back() + (static_cast<int>(*thisIt) * 2) + carry;
-		prod.push_back(static_cast<unsigned char>(digitProd%10));
+	size_t counter = 0;
+	for ( ; thisIt != ubig_value.end(); ++thisIt ){
+		int digitProd = (static_cast<int>(*thisIt) * 2) + carry;
+
+		cout << "digit " << static_cast<int>(*thisIt) << endl;
+		cout << "digitProd " << digitProd << endl;
+
+		prod.insert(prod.begin() + counter,static_cast<unsigned char>(digitProd%10));
 		carry = trunc(digitProd/10);
+		++counter;
 	}
-	
+	if (carry != 0) {
+		prod.erase(prod.begin() + counter);
+		prod.insert((prod.begin() + counter), static_cast<unsigned char>(carry));
+	}
    ubig_value = prod;
    this->trim();
 }
@@ -185,15 +201,20 @@ void ubigint::divide_by_2() {
 	int carry = 0;
 
 	for ( ; thisIt != ubig_value.end() - 1; ++thisIt ){
-	   DEBUGF ('d', "div digit: " << (static_cast<int>(*thisIt)));
-		if(static_cast<int>(*(thisIt + 1)) != 0 && static_cast<int>(*(thisIt + 1)) % 2 != 0){
+		DEBUGF('d', "div digit: " << (static_cast<int>(*thisIt)));
+	   if(static_cast<int>(*(thisIt + 1)) != 0 && static_cast<int>(*(thisIt + 1)) % 2 != 0){
 			carry = 5;
 		}else{
 			carry = 0;
 		}
+
+	   /*cout << "carry " << carry << endl;
+	   cout << "div " << trunc((static_cast<int>(*thisIt) / 2) + carry) << endl;*/
+
 		quot.push_back(trunc((static_cast<int>(*thisIt) / 2) + carry));
 	}
-	quot.push_back(trunc((static_cast<int>(*thisIt) / 2) + carry));
+
+	quot.push_back(trunc((static_cast<int>(*thisIt) / 2)));
 	ubig_value = quot;
 	this->trim();
 }
@@ -222,12 +243,21 @@ quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
 		return { .quotient = remainder, .remainder = rere };
 	}
    while (divisor < remainder) {
+	   cout << "less" << endl;
 	  divisor.multiply_by_2();
 	  power_of_2.multiply_by_2();
+	  cout << "power_of_2 " << power_of_2 << endl;
+	  cout << "divisor " << divisor << endl;
    }
 
    while (power_of_2 > zero) {
+	   cout << "~~~~~~~~~~~" << endl;
+	   cout << "power_of_2 " << power_of_2 << endl;
+	   cout << "quotient " << quotient << endl;
+	   cout << "divisor " << divisor << endl;
+	   cout << "remainder " << remainder << endl;
 	  if (divisor <= remainder) {
+		  cout << "op" << endl;
 		 remainder = remainder - divisor;
 		 quotient = quotient + power_of_2;
 	  }
@@ -250,20 +280,23 @@ bool ubigint::operator== (const ubigint& that) const {
 }
 
 bool ubigint::operator< (const ubigint& that) const {
+
+	cout << *this << "<" << that << endl;
+
 	if(ubig_value.size() == that.ubig_value.size()){
-		auto thisIt = ubig_value.begin();
-		auto thatIt = that.ubig_value.begin();
-		for ( ; thisIt != ubig_value.end(); ++thisIt ){
+		auto thisIt = ubig_value.rbegin();
+		auto thatIt = that.ubig_value.rbegin();
+		for ( ; thisIt != ubig_value.rend(); ++thisIt ){
 			int thatDigit;
-			if (thatIt >= that.ubig_value.end()) {
+			if (thatIt >= that.ubig_value.rend()) {
 				thatDigit = -1;
 			}
 			else {
 				thatDigit = static_cast<int>(*(thatIt++));
 			}
-			bool lt = static_cast<int>(*thisIt) < thatDigit;
-			if(lt == true){
-				return true;
+			
+			if (static_cast<int>(*thisIt) != thatDigit) {
+				return static_cast<int>(*thisIt) < thatDigit;
 			}
 		}
 	}
@@ -273,7 +306,7 @@ bool ubigint::operator< (const ubigint& that) const {
 std::ostream& operator<< (std::ostream& out, const ubigint& that) {
 	std::ostringstream output;
 
-	for ( auto thisIt = that.ubig_value.begin(); thisIt != that.ubig_value.end(); ++thisIt ){
+	for ( auto thisIt = that.ubig_value.rbegin(); thisIt != that.ubig_value.rend(); ++thisIt ){
 		output << (static_cast<int>(*thisIt));
 	}
 
