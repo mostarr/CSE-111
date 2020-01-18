@@ -21,6 +21,12 @@ bigint pow (const bigint& base_arg, const bigint& exponent_arg) {
       exponent = - exponent;
    }
    while (exponent > ZERO) {
+
+       //cout << "~~~~~~~~~~" << endl;
+       //cout << "exp: " << exponent << endl;
+       //cout << "result: " << result << endl;
+       //cout << "base: " << base << endl;
+
       if (exponent % TWO == ONE) {
          result = result * base;
          exponent = exponent - 1;

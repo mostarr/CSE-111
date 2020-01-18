@@ -131,17 +131,26 @@ ubigint ubigint::operator* (const ubigint& that) const {
 		auto thatIt = that.ubig_value.begin();
 		for ( ; thatIt != that.ubig_value.end(); ++thatIt ){
 			int digitAt = static_cast<int>(*(prod.begin() + counterIn + counterOut));
-			int subProd = (static_cast<int>(*thisIt) * static_cast<int>(*(thatIt)));
+			int subProd = static_cast<int>(*thisIt) * static_cast<int>(*(thatIt));
 			int digitProd = digitAt + subProd + carry;
+
+			/*cout << "~~~~~~~~~~" << endl;
+			cout << "digitAt: " << digitAt << endl;
+			cout << "thisDigit: " << static_cast<int>(*thisIt) << endl;
+			cout << "thatDigit: " << static_cast<int>(*thatIt) << endl;
+			cout << "prod: " << digitProd << endl;
+			cout << "counterIn: " << counterIn << endl;
+			cout << "counterOut: " << counterOut << endl;*/
 
 			if(digitProd!=0){
 				prod.erase(prod.begin() + counterOut + counterIn);
-				prod.insert(prod.begin() + counterOut + counterIn++,static_cast<unsigned char>(digitProd%10));
+				prod.insert(prod.begin() + counterOut + counterIn,static_cast<unsigned char>(digitProd%10));
 			}			 
+			++counterIn;
 			carry = trunc(digitProd/10);
 		}
 		if (carry != 0) {
-			prod.erase((prod.begin() + (counterIn)+(counterOut)));
+			prod.erase((prod.begin() + (counterIn) + (counterOut)));
 			prod.insert((prod.begin() + (counterIn) + (counterOut)),static_cast<unsigned char>(carry));
 		}
 		++counterOut;
