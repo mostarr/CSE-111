@@ -133,23 +133,11 @@ ubigint ubigint::operator* (const ubigint& that) const {
 			int digitAt = static_cast<int>(*(prod.begin() + counterIn + counterOut));
 			int subProd = (static_cast<int>(*thisIt) * static_cast<int>(*(thatIt)));
 			int digitProd = digitAt + subProd + carry;
-			
-			/*cout << "digitProd: " << digitProd << endl;
-			cout << "counterIn: " << counterIn << endl;
-			cout << "counterOut: " << counterOut << endl;
-			cout << "this: " << static_cast<int>(*thisIt) << endl;
-			cout << "that: " << static_cast<int>(*(thatIt)) << endl;*/
-
 
 			if(digitProd!=0){
 				prod.erase(prod.begin() + counterOut + counterIn);
 				prod.insert(prod.begin() + counterOut + counterIn++,static_cast<unsigned char>(digitProd%10));
-			}
-
-			/*ubigint intValue;
-			intValue.ubig_value = prod;
-			cout << "prod: " << intValue << endl;*/
-			 
+			}			 
 			carry = trunc(digitProd/10);
 		}
 		if (carry != 0) {
@@ -171,9 +159,6 @@ void ubigint::multiply_by_2() {
 	size_t counter = 0;
 	for ( ; thisIt != ubig_value.end(); ++thisIt ){
 		int digitProd = (static_cast<int>(*thisIt) * 2) + carry;
-
-		cout << "digit " << static_cast<int>(*thisIt) << endl;
-		cout << "digitProd " << digitProd << endl;
 
 		prod.insert(prod.begin() + counter,static_cast<unsigned char>(digitProd%10));
 		carry = trunc(digitProd/10);
@@ -208,9 +193,6 @@ void ubigint::divide_by_2() {
 			carry = 0;
 		}
 
-	   /*cout << "carry " << carry << endl;
-	   cout << "div " << trunc((static_cast<int>(*thisIt) / 2) + carry) << endl;*/
-
 		quot.push_back(trunc((static_cast<int>(*thisIt) / 2) + carry));
 	}
 
@@ -221,10 +203,9 @@ void ubigint::divide_by_2() {
 
 ubigint ubigint::mod_by_2() {
 	ubigint result;
-	result = static_cast<int>(ubig_value.back()) % 2;
+	result = static_cast<int>(ubig_value.front()) % 2;
 	return result;
 }
-
 
  
 struct quo_rem { ubigint quotient; ubigint remainder; };
@@ -243,21 +224,12 @@ quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
 		return { .quotient = remainder, .remainder = rere };
 	}
    while (divisor < remainder) {
-	   cout << "less" << endl;
 	  divisor.multiply_by_2();
 	  power_of_2.multiply_by_2();
-	  cout << "power_of_2 " << power_of_2 << endl;
-	  cout << "divisor " << divisor << endl;
    }
 
    while (power_of_2 > zero) {
-	   cout << "~~~~~~~~~~~" << endl;
-	   cout << "power_of_2 " << power_of_2 << endl;
-	   cout << "quotient " << quotient << endl;
-	   cout << "divisor " << divisor << endl;
-	   cout << "remainder " << remainder << endl;
 	  if (divisor <= remainder) {
-		  cout << "op" << endl;
 		 remainder = remainder - divisor;
 		 quotient = quotient + power_of_2;
 	  }
@@ -280,9 +252,6 @@ bool ubigint::operator== (const ubigint& that) const {
 }
 
 bool ubigint::operator< (const ubigint& that) const {
-
-	cout << *this << "<" << that << endl;
-
 	if(ubig_value.size() == that.ubig_value.size()){
 		auto thisIt = ubig_value.rbegin();
 		auto thatIt = that.ubig_value.rbegin();

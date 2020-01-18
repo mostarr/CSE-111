@@ -21,15 +21,10 @@ bigint pow (const bigint& base_arg, const bigint& exponent_arg) {
       exponent = - exponent;
    }
    while (exponent > ZERO) {
-       cout << "exp: " << exponent << endl;
-       cout << "res: " << result << endl;
-       cout << "base: " << base << endl;
       if (exponent % TWO == ONE) {
-          cout << "mod 1" << endl;
          result = result * base;
          exponent = exponent - 1;
       }else {
-          cout << "mod 0" << endl;
         base = base * base;
         exponent = exponent / 2;
       }
