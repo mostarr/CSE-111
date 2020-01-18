@@ -288,5 +288,5 @@ std::ostream& operator<< (std::ostream& out, const ubigint& that) {
 		output << (static_cast<int>(*thisIt));
 	}
 
-   return out << "ubigint(" << output.str() << ")";
+   return out << output.str();
 }
