@@ -37,3 +37,10 @@ countwords/.cproject
 
 countwords/build/make.debug.linux.x86_64/
 /.vs
+Lab1/ydc
+Lab1/.vs/slnx.sqlite
+Lab1/.vs/Lab1/v16/.suo
+Lab1/.vs/Lab1/v16/Browse.VC.db
+Lab1/.vs/Lab1/v16/ipch/AutoPCH/106cacf88759ee6/LIBFNS.ipch
+Lab1/.vs/Lab1/v16/ipch/AutoPCH/770fc80dcc1f84de/UTIL.ipch
+Lab1/.vs/Lab1/v16/ipch/AutoPCH/27d3e54b3631b5c5/BIGINT.ipch
