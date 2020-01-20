@@ -28,9 +28,9 @@ using namespace std;
 class ydc_error : public runtime_error
 {
 public:
-   explicit ydc_error(const string &what) : runtime_error(what)
-   {
-   }
+  explicit ydc_error(const string &what) : runtime_error(what)
+  {
+  }
 };
 
 //
@@ -41,9 +41,9 @@ public:
 template <typename numeric>
 const string octal(numeric number)
 {
-   ostringstream stream;
-   stream << showbase << oct << (number + 0);
-   return stream.str();
+  ostringstream stream;
+  stream << showbase << oct << (number + 0);
+  return stream.str();
 }
 
 //
@@ -57,15 +57,15 @@ const string octal(numeric number)
 class exec
 {
 private:
-   static string execname_;
-   static int status_;
-   static void execname(const string &argv0);
-   friend int main(int, char **);
+  static string execname_;
+  static int status_;
+  static void execname(const string &argv0);
+  friend int main(int, char **);
 
 public:
-   static void status(int status);
-   static const string &execname() { return execname_; }
-   static int status() { return status_; }
+  static void status(int status);
+  static const string &execname() { return execname_; }
+  static int status() { return status_; }
 };
 
 //
