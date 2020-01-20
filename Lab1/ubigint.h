@@ -13,32 +13,33 @@ using namespace std;
 #include "debug.h"
 #include "relops.h"
 
-class ubigint {
-	friend ostream& operator<< (ostream&, const ubigint&);
-	private:
-	   using udigit_t = unsigned char;
-	   using ubigvalue_t = std::vector<udigit_t>;
-	   ubigvalue_t ubig_value;
-	   void trim();
-	public:
-	  void multiply_by_2();
-	  void divide_by_2();
-	  ubigint mod_by_2();
+class ubigint
+{
+	friend ostream &operator<<(ostream &, const ubigint &);
 
+private:
+	using udigit_t = unsigned char;
+	using ubigvalue_t = std::vector<udigit_t>;
+	ubigvalue_t ubig_value;
+	void trim();
 
-	  ubigint() = default; // Need default ctor as well.
-	  ubigint (unsigned long);
-	  ubigint (const string&);
+public:
+	void multiply_by_2();
+	void divide_by_2();
+	ubigint mod_by_2();
 
-	  ubigint operator+ (const ubigint&) const;
-	  ubigint operator- (const ubigint&) const;
-	  ubigint operator* (const ubigint&) const;
-	  ubigint operator/ (const ubigint&) const;
-	  ubigint operator% (const ubigint&) const;
+	ubigint() = default; // Need default ctor as well.
+	ubigint(unsigned long);
+	ubigint(const string &);
 
-	  bool operator== (const ubigint&) const;
-	  bool operator<  (const ubigint&) const;
+	ubigint operator+(const ubigint &) const;
+	ubigint operator-(const ubigint &) const;
+	ubigint operator*(const ubigint &)const;
+	ubigint operator/(const ubigint &) const;
+	ubigint operator%(const ubigint &) const;
+
+	bool operator==(const ubigint &) const;
+	bool operator<(const ubigint &) const;
 };
 
 #endif
-

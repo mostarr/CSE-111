@@ -25,10 +25,12 @@ using namespace std;
 //    the main function should take control.
 //
 
-class ydc_error: public runtime_error {
-   public:
-      explicit ydc_error (const string& what): runtime_error (what) {
-      }
+class ydc_error : public runtime_error
+{
+public:
+   explicit ydc_error(const string &what) : runtime_error(what)
+   {
+   }
 };
 
 //
@@ -37,13 +39,13 @@ class ydc_error: public runtime_error {
 //
 
 template <typename numeric>
-const string octal (numeric number) {
+const string octal(numeric number)
+{
    ostringstream stream;
    stream << showbase << oct << (number + 0);
    return stream.str();
 }
 
-
 //
 // main -
 //    Keep track of execname and exit status.  Must be initialized
@@ -52,16 +54,18 @@ const string octal (numeric number) {
 //    before anything else.
 //
 
-class exec {
-   private:
-      static string execname_;
-      static int status_;
-      static void execname (const string& argv0);
-      friend int main (int, char**);
-   public:
-      static void status (int status);
-      static const string& execname() {return execname_; }
-      static int status() {return status_; }
+class exec
+{
+private:
+   static string execname_;
+   static int status_;
+   static void execname(const string &argv0);
+   friend int main(int, char **);
+
+public:
+   static void status(int status);
+   static const string &execname() { return execname_; }
+   static int status() { return status_; }
 };
 
 //
@@ -72,8 +76,7 @@ class exec {
 //       complain() << filename << ": some problem" << endl;
 //
 
-ostream& note();
-ostream& error();
+ostream &note();
+ostream &error();
 
 #endif
-
