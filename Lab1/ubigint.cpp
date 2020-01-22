@@ -154,22 +154,28 @@ ubigint ubigint::operator*(const ubigint &that) const
     auto thatIt = that.ubig_value.begin();
     for (; thatIt != that.ubig_value.end(); ++thatIt)
     {
-      int digitAt = static_cast<int>(*(prod.begin() + counterIn + counterOut));
-      int subProd = static_cast<int>(*thisIt) * static_cast<int>(*(thatIt));
+      int digitAt = static_cast<int>(*(prod.begin() +
+                                       counterIn + counterOut));
+      int subProd = static_cast<int>(*thisIt) *
+                    static_cast<int>(*(thatIt));
       int digitProd = digitAt + subProd + carry;
 
       if (digitProd != 0)
       {
         prod.erase(prod.begin() + counterOut + counterIn);
-        prod.insert(prod.begin() + counterOut + counterIn, static_cast<unsigned char>(digitProd % 10));
+        prod.insert(prod.begin() + counterOut + counterIn,
+                    static_cast<unsigned char>(digitProd % 10));
       }
       ++counterIn;
       carry = trunc(digitProd / 10);
     }
     if (carry != 0)
     {
-      prod.erase((prod.begin() + (counterIn) + (counterOut)));
-      prod.insert((prod.begin() + (counterIn) + (counterOut)), static_cast<unsigned char>(carry));
+      prod.erase((prod.begin() +
+                  (counterIn) + (counterOut)));
+      prod.insert((prod.begin() +
+                   (counterIn) + (counterOut)),
+                  static_cast<unsigned char>(carry));
     }
     ++counterOut;
   }
@@ -189,14 +195,16 @@ void ubigint::multiply_by_2()
   {
     int digitProd = (static_cast<int>(*thisIt) * 2) + carry;
 
-    prod.insert(prod.begin() + counter, static_cast<unsigned char>(digitProd % 10));
+    prod.insert(prod.begin() + counter,
+                static_cast<unsigned char>(digitProd % 10));
     carry = trunc(digitProd / 10);
     ++counter;
   }
   if (carry != 0)
   {
     prod.erase(prod.begin() + counter);
-    prod.insert((prod.begin() + counter), static_cast<unsigned char>(carry));
+    prod.insert((prod.begin() + counter),
+                static_cast<unsigned char>(carry));
   }
   ubig_value = prod;
   this->trim();
@@ -221,7 +229,8 @@ void ubigint::divide_by_2()
   for (; thisIt != ubig_value.end() - 1; ++thisIt)
   {
     DEBUGF('d', "div digit: " << (static_cast<int>(*thisIt)));
-    if (static_cast<int>(*(thisIt + 1)) != 0 && static_cast<int>(*(thisIt + 1)) % 2 != 0)
+    if (static_cast<int>(*(thisIt + 1)) != 0 &&
+        static_cast<int>(*(thisIt + 1)) % 2 != 0)
     {
       carry = 5;
     }
@@ -230,10 +239,12 @@ void ubigint::divide_by_2()
       carry = 0;
     }
 
-    quot.push_back(trunc((static_cast<int>(*thisIt) / 2) + carry));
+    quot.push_back(
+        trunc((static_cast<int>(*thisIt) / 2) + carry));
   }
 
-  quot.push_back(trunc((static_cast<int>(*thisIt) / 2)));
+  quot.push_back(
+      trunc((static_cast<int>(*thisIt) / 2)));
   ubig_value = quot;
   this->trim();
 }
@@ -332,7 +343,8 @@ std::ostream &operator<<(std::ostream &out, const ubigint &that)
 {
   std::ostringstream output;
 
-  for (auto thisIt = that.ubig_value.rbegin(); thisIt != that.ubig_value.rend(); ++thisIt)
+  for (auto thisIt = that.ubig_value.rbegin();
+       thisIt != that.ubig_value.rend(); ++thisIt)
   {
     output << (static_cast<int>(*thisIt));
   }

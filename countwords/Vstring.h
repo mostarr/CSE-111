@@ -8,18 +8,20 @@
 #ifndef VSTRING_H_
 #define VSTRING_H_
 
-class Vstring {
+class Vstring
+{
 private:
-	int cap;
-	int end;
-	char* word;
+  int cap;
+  int end;
+  char *word;
+
 public:
-	Vstring();
-	virtual ~Vstring();
-	char* getWord() { return word; }
-	int getEnd() { return end; }
-	void addChar(char x);
-	void print();
+  Vstring();
+  virtual ~Vstring();
+  char *getWord() { return word; }
+  int getEnd() { return end; }
+  void addChar(char x);
+  void print();
 };
 
 #endif /* VSTRING_H_ */

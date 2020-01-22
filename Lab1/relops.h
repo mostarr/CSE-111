@@ -12,24 +12,27 @@
 #define __REL_OPS_H__
 
 template <typename value>
-inline bool operator!= (const value& left, const value& right) {
-   return !(left == right); 
+inline bool operator!=(const value &left, const value &right)
+{
+  return !(left == right);
 }
 
 template <typename value>
-inline bool operator>  (const value& left, const value& right) {
-   return right < left; 
+inline bool operator>(const value &left, const value &right)
+{
+  return right < left;
 }
 
 template <typename value>
-inline bool operator<= (const value& left, const value& right) {
-   return !(right < left);
+inline bool operator<=(const value &left, const value &right)
+{
+  return !(right < left);
 }
 
 template <typename value>
-inline bool operator>= (const value& left, const value& right) {
-   return !(left < right); 
+inline bool operator>=(const value &left, const value &right)
+{
+  return !(left < right);
 }
 
 #endif
-
