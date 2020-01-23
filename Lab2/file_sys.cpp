@@ -34,9 +34,12 @@ inode_state::inode_state()
                         << ", prompt = \"" << prompt() << "\"");
 }
 
+const inode_ptr &inode_state::getCwd() const { return cwd; }
 const string &inode_state::prompt() const { return prompt_; }
+void inode_state::setPrompt(const string &prompt) { prompt_ = prompt; }
 
-ostream &operator<<(ostream &out, const inode_state &state)
+ostream &
+operator<<(ostream &out, const inode_state &state)
 {
   out << "inode_state: root = " << state.root
       << ", cwd = " << state.cwd;
@@ -69,6 +72,7 @@ file_error::file_error(const string &what) : runtime_error(what)
 
 const wordvec &base_file::readfile() const
 {
+  
   throw file_error("is a " + error_file_type());
 }
 

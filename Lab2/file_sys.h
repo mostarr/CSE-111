@@ -39,8 +39,8 @@ class inode_state
   friend ostream &operator<<(ostream &out, const inode_state &);
 
 private:
-  inode_ptr root{nullptr};
-  inode_ptr cwd{nullptr};
+  inode_ptr root = make_shared<inode>(file_type::DIRECTORY_TYPE);
+  inode_ptr cwd{root};
   string prompt_{"% "};
 
 public:
@@ -48,6 +48,8 @@ public:
   inode_state &operator=(const inode_state &) = delete; // op=
   inode_state();
   const string &prompt() const;
+  const inode_ptr &getCwd() const;
+  void setPrompt(const string &prompt);
 };
 
 // class inode -
@@ -75,6 +77,7 @@ private:
 public:
   inode(file_type);
   int get_inode_nr() const;
+  base_file_ptr getContents() const { return contents; }
 };
 
 // class base_file -

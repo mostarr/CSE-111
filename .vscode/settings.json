@@ -1,4 +1,11 @@
 {
   "editor.detectIndentation": false,
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "cSpell.words": [
+    "DEBUGF"
+  ],
+  "files.associations": {
+    "xstring": "cpp",
+    "memory": "cpp"
+  }
 }
