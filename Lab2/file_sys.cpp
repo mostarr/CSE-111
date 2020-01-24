@@ -110,6 +110,11 @@ inode_ptr base_file::getDirent(const string &)
   throw file_error("is a " + error_file_type());
 }
 
+void base_file::pwd()
+{
+  throw file_error("is a " + error_file_type());
+}
+
 void base_file::name(const string name)
 {
   name_ = name;
@@ -216,6 +221,21 @@ void directory::ls()
   }
 }
 
+void directory::pwd()
+{
+  wordvec pathname;
+  inode_ptr parent = dirents.find(".")->second;
+  while (parent->getContents()->name() != "")
+  {
+    pathname.insert(pathname.begin(), parent->getContents()->name());
+    parent = parent->getContents()->getDirent("..");
+  }
+  for (const string &dirName : pathname)
+  {
+    cout << "/" << dirName;
+  }
+}
+
 void directory::lsr()
 {
   cout << "/" << name_ << ":" << endl;
@@ -229,24 +249,17 @@ void directory::lsr()
     {
       cout << "/";
     }
-    cout << endl;
+    if (dirent != *dirents.end())
+    {
+      cout << endl;
+    }
   }
   for (auto dirent : dirents)
   {
     if (dirent.second->getContents()->type() == "dir" &&
         dirent.first != "." && dirent.first != "..")
     {
-      wordvec pathname;
-      inode_ptr parent = dirents.find(".")->second;
-      while (parent->getContents()->name() != "")
-      {
-        pathname.insert(pathname.begin(), parent->getContents()->name());
-        parent = parent->getContents()->getDirent("..");
-      }
-      for (const string &dirName : pathname)
-      {
-        cout << "/" << dirName;
-      }
+      pwd();
       dirent.second->getContents()->lsr();
     }
   }

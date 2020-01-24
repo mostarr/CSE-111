@@ -116,6 +116,7 @@ public:
   virtual void lsr();
   virtual void init_dirents(inode_ptr parent, inode_ptr self);
   virtual inode_ptr getDirent(const string &name);
+  virtual void pwd();
 };
 
 // class plain_file -
@@ -183,6 +184,7 @@ public:
   virtual void lsr() override;
   virtual void init_dirents(inode_ptr parent, inode_ptr self) override;
   virtual inode_ptr getDirent(const string &name) override;
+  virtual void pwd() override;
 };
 
 #endif

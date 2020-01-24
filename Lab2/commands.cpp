@@ -166,6 +166,17 @@ void fn_pwd(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
+  auto cwdPtr = state.cwd();
+  auto cwdCts = cwdPtr->getContents();
+  if (cwdCts->getDirent(".") == cwdCts->getDirent(".."))
+  {
+    cout << "/" << endl;
+  }
+  else
+  {
+    cwdCts->pwd();
+    cout << endl;
+  }
 }
 
 void fn_rm(inode_state &state, const wordvec &words)
