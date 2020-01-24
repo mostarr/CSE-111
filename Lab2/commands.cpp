@@ -49,19 +49,27 @@ void fn_cat(inode_state &state, const wordvec &words)
   auto cwdPtr = state.cwd();
   auto cwdCts = cwdPtr->getContents();
   inode_ptr file = cwdCts->getDirent(words.at(1));
-  wordvec fileContents = file->getContents()->readfile();
-  if (fileContents.size() > 0)
+  try
   {
-    string fileString = "";
-    for (string word : fileContents)
+    wordvec fileContents = file->getContents()->readfile();
+    if (fileContents.size() > 0)
     {
-      fileString += word;
-      if (word != words.back())
+      string fileString = "";
+      for (string word : fileContents)
       {
-        fileString += " ";
+        fileString += word;
+        if (word != words.back())
+        {
+          fileString += " ";
+        }
       }
+      cout << fileString << endl;
     }
-    cout << fileString << endl;
+  }
+  catch (file_error &)
+  {
+    cout << "cat: " << words.at(1) << ": No such file or directory" << endl;
+    exec::status(1);
   }
 }
 
