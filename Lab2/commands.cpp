@@ -46,6 +46,23 @@ void fn_cat(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
+  auto cwdPtr = state.cwd();
+  auto cwdCts = cwdPtr->getContents();
+  inode_ptr file = cwdCts->getDirent(words.at(1));
+  wordvec fileContents = file->getContents()->readfile();
+  if (fileContents.size() > 0)
+  {
+    string fileString = "";
+    for (string word : fileContents)
+    {
+      fileString += word;
+      if (word != words.back())
+      {
+        fileString += " ";
+      }
+    }
+    cout << fileString << endl;
+  }
 }
 
 void fn_cd(inode_state &state, const wordvec &words)
@@ -54,7 +71,7 @@ void fn_cd(inode_state &state, const wordvec &words)
   DEBUGF('c', words);
   auto cwdPtr = state.cwd();
   auto cwdCts = cwdPtr->getContents();
-  inode_ptr newCwd = cwdCts->getDirent(words[1]);
+  inode_ptr newCwd = cwdCts->getDirent(words.at(1));
   state.cwd(newCwd);
 }
 
@@ -94,14 +111,10 @@ void fn_make(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
-  if (words.size() > 1)
+  if (words.size() > 2)
   {
-    string contents = "";
-    wordvec sub(words.begin() + 1, words.end());
-    for (string word : sub)
-    {
-      contents += word + " ";
-    }
+    wordvec sub(words.begin() + 2, words.end());
+    state.cwd()->getContents()->mkfile(words.at(1))->getContents()->writefile(sub);
   }
 }
 

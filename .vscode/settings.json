@@ -2,11 +2,14 @@
   "editor.detectIndentation": false,
   "files.eol": "\n",
   "cSpell.words": [
-    "DEBUGF"
+    "DEBUGF",
+    "mkfile"
   ],
   "files.associations": {
     "xstring": "cpp",
     "memory": "cpp",
-    "xtree": "cpp"
+    "xtree": "cpp",
+    "system_error": "cpp",
+    "xlocale": "cpp"
   }
 }

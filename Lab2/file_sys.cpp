@@ -146,6 +146,7 @@ const wordvec &plain_file::readfile() const
 void plain_file::writefile(const wordvec &words)
 {
   DEBUGF('i', words);
+  data = words;
 }
 
 void plain_file::ls()
@@ -188,7 +189,9 @@ inode_ptr directory::mkdir(const string &dirname)
 inode_ptr directory::mkfile(const string &filename)
 {
   DEBUGF('i', filename);
-  return nullptr;
+  auto file = make_shared<inode>(file_type::PLAIN_TYPE, filename);
+  dirents.insert({filename, file});
+  return file;
 }
 
 inode_ptr directory::getDirent(const string &name)
