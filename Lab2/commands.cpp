@@ -94,13 +94,35 @@ void fn_make(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
+  if (words.size() > 1)
+  {
+    string contents = "";
+    wordvec sub(words.begin() + 1, words.end());
+    for (string word : sub)
+    {
+      contents += word + " ";
+    }
+  }
 }
 
 void fn_mkdir(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
-  state.cwd()->getContents()->mkdir(words[1]);
+  if (words.size() > 1)
+  {
+    string name = "";
+    wordvec sub(words.begin() + 1, words.end());
+    for (string word : sub)
+    {
+      name += word;
+      if (word != words.back())
+      {
+        name += " ";
+      }
+    }
+    state.cwd()->getContents()->mkdir(name);
+  }
 }
 
 void fn_prompt(inode_state &state, const wordvec &words)

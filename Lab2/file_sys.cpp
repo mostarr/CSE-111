@@ -160,7 +160,7 @@ void plain_file::lsr()
 
 size_t directory::size() const
 {
-  size_t size{0};
+  size_t size{dirents.size()};
   DEBUGF('i', "size = " << size);
   return size;
 }
@@ -198,7 +198,7 @@ inode_ptr directory::getDirent(const string &name)
 
 void directory::ls()
 {
-  cout << name_ << "/:" << endl;
+  cout << "/" << name_ << ":" << endl;
   for (auto dirent : dirents)
   {
     cout << "\t";
@@ -215,7 +215,7 @@ void directory::ls()
 
 void directory::lsr()
 {
-  cout << name_ << "/:" << endl;
+  cout << "/" << name_ << ":" << endl;
   for (auto dirent : dirents)
   {
     cout << "\t";
@@ -225,12 +225,26 @@ void directory::lsr()
     if (dirent.second->getContents()->type() == "dir")
     {
       cout << "/";
-      if (dirent.first != "." && dirent.first != "..")
-      {
-        cout << endl;
-        dirent.second->getContents()->lsr();
-      }
     }
     cout << endl;
+  }
+  for (auto dirent : dirents)
+  {
+    if (dirent.second->getContents()->type() == "dir" &&
+        dirent.first != "." && dirent.first != "..")
+    {
+      wordvec pathname;
+      inode_ptr parent = dirents.find(".")->second;
+      while (parent->getContents()->name() != "")
+      {
+        pathname.insert(pathname.begin(), parent->getContents()->name());
+        parent = parent->getContents()->getDirent("..");
+      }
+      for (const string &dirName : pathname)
+      {
+        cout << "/" << dirName;
+      }
+      dirent.second->getContents()->lsr();
+    }
   }
 }

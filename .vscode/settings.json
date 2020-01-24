@@ -6,6 +6,7 @@
   ],
   "files.associations": {
     "xstring": "cpp",
-    "memory": "cpp"
+    "memory": "cpp",
+    "xtree": "cpp"
   }
 }
