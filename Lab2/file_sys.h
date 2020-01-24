@@ -39,8 +39,8 @@ class inode_state
   friend ostream &operator<<(ostream &out, const inode_state &);
 
 private:
-  inode_ptr root = make_shared<inode>(file_type::DIRECTORY_TYPE);
-  inode_ptr cwd{root};
+  inode_ptr root{nullptr};
+  inode_ptr cwd_{nullptr};
   string prompt_{"% "};
 
 public:
@@ -48,8 +48,9 @@ public:
   inode_state &operator=(const inode_state &) = delete; // op=
   inode_state();
   const string &prompt() const;
-  const inode_ptr &getCwd() const;
-  void setPrompt(const string &prompt);
+  void prompt(const string &prompt);
+  const inode_ptr &cwd() const;
+  void cwd(inode_ptr);
 };
 
 // class inode -
@@ -75,7 +76,7 @@ private:
   base_file_ptr contents;
 
 public:
-  inode(file_type);
+  inode(file_type, const string &name);
   int get_inode_nr() const;
   base_file_ptr getContents() const { return contents; }
 };
@@ -94,10 +95,12 @@ public:
 class base_file
 {
 protected:
+  string name_;
   base_file() = default;
   virtual const string error_file_type() const = 0;
 
 public:
+  virtual const string type() { return "base"; };
   virtual ~base_file() = default;
   base_file(const base_file &) = delete;
   base_file &operator=(const base_file &) = delete;
@@ -107,6 +110,12 @@ public:
   virtual void remove(const string &filename);
   virtual inode_ptr mkdir(const string &dirname);
   virtual inode_ptr mkfile(const string &filename);
+  virtual string name();
+  virtual void name(const string name);
+  virtual void ls();
+  virtual void lsr();
+  virtual void init_dirents(inode_ptr parent, inode_ptr self);
+  virtual inode_ptr getDirent(const string &name);
 };
 
 // class plain_file -
@@ -128,9 +137,12 @@ private:
   }
 
 public:
+  virtual const string type() { return "file"; };
   virtual size_t size() const override;
   virtual const wordvec &readfile() const override;
   virtual void writefile(const wordvec &newdata) override;
+  virtual void ls() override;
+  virtual void lsr() override;
 };
 
 // class directory -
@@ -162,10 +174,15 @@ private:
   }
 
 public:
+  virtual const string type() { return "dir"; };
   virtual size_t size() const override;
   virtual void remove(const string &filename) override;
   virtual inode_ptr mkdir(const string &dirname) override;
   virtual inode_ptr mkfile(const string &filename) override;
+  virtual void ls() override;
+  virtual void lsr() override;
+  virtual void init_dirents(inode_ptr parent, inode_ptr self) override;
+  virtual inode_ptr getDirent(const string &name) override;
 };
 
 #endif

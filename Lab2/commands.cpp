@@ -52,6 +52,10 @@ void fn_cd(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
+  auto cwdPtr = state.cwd();
+  auto cwdCts = cwdPtr->getContents();
+  inode_ptr newCwd = cwdCts->getDirent(words[1]);
+  state.cwd(newCwd);
 }
 
 void fn_echo(inode_state &state, const wordvec &words)
@@ -72,15 +76,18 @@ void fn_ls(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
-  auto cwdPtr = state.getCwd();
-  directory cwdCts = cwdPtr->getContents();
-  cout << cwdCts->readfile() << endl;
+  auto cwdPtr = state.cwd();
+  auto cwdCts = cwdPtr->getContents();
+  cwdCts->ls();
 }
 
 void fn_lsr(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
+  auto cwdPtr = state.cwd();
+  auto cwdCts = cwdPtr->getContents();
+  cwdCts->lsr();
 }
 
 void fn_make(inode_state &state, const wordvec &words)
@@ -93,6 +100,7 @@ void fn_mkdir(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
+  state.cwd()->getContents()->mkdir(words[1]);
 }
 
 void fn_prompt(inode_state &state, const wordvec &words)
@@ -107,7 +115,7 @@ void fn_prompt(inode_state &state, const wordvec &words)
     {
       prompt += word + " ";
     }
-    state.setPrompt(prompt);
+    state.prompt(prompt);
   }
 }
 

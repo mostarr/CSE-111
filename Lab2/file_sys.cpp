@@ -30,23 +30,26 @@ ostream &operator<<(ostream &out, file_type type)
 
 inode_state::inode_state()
 {
-  DEBUGF('i', "root = " << root << ", cwd = " << cwd
+  root = make_shared<inode>(file_type::DIRECTORY_TYPE, "");
+  root->contents->init_dirents(root, root);
+  cwd_ = root;
+  DEBUGF('i', "root = " << root << ", cwd = " << cwd()
                         << ", prompt = \"" << prompt() << "\"");
 }
 
-const inode_ptr &inode_state::getCwd() const { return cwd; }
+const inode_ptr &inode_state::cwd() const { return cwd_; }
+void inode_state::cwd(inode_ptr newCwd) { cwd_ = newCwd; }
 const string &inode_state::prompt() const { return prompt_; }
-void inode_state::setPrompt(const string &prompt) { prompt_ = prompt; }
+void inode_state::prompt(const string &prompt) { prompt_ = prompt; }
 
-ostream &
-operator<<(ostream &out, const inode_state &state)
+ostream &operator<<(ostream &out, const inode_state &state)
 {
   out << "inode_state: root = " << state.root
-      << ", cwd = " << state.cwd;
+      << ", cwd = " << state.cwd();
   return out;
 }
 
-inode::inode(file_type type) : inode_nr(next_inode_nr++)
+inode::inode(file_type type, const string &name) : inode_nr(next_inode_nr++)
 {
   switch (type)
   {
@@ -57,6 +60,7 @@ inode::inode(file_type type) : inode_nr(next_inode_nr++)
     contents = make_shared<directory>();
     break;
   }
+  contents->name(name);
   DEBUGF('i', "inode " << inode_nr << ", type = " << type);
 }
 
@@ -72,7 +76,7 @@ file_error::file_error(const string &what) : runtime_error(what)
 
 const wordvec &base_file::readfile() const
 {
-  
+
   throw file_error("is a " + error_file_type());
 }
 
@@ -96,6 +100,36 @@ inode_ptr base_file::mkfile(const string &)
   throw file_error("is a " + error_file_type());
 }
 
+void base_file::init_dirents(inode_ptr, inode_ptr)
+{
+  throw file_error("is a " + error_file_type());
+}
+
+inode_ptr base_file::getDirent(const string &)
+{
+  throw file_error("is a " + error_file_type());
+}
+
+void base_file::name(const string name)
+{
+  name_ = name;
+}
+
+string base_file::name()
+{
+  return name_;
+}
+
+void base_file::ls()
+{
+  cout << name_ << endl;
+}
+
+void base_file::lsr()
+{
+  cout << name_ << endl;
+}
+
 size_t plain_file::size() const
 {
   size_t size{0};
@@ -114,11 +148,27 @@ void plain_file::writefile(const wordvec &words)
   DEBUGF('i', words);
 }
 
+void plain_file::ls()
+{
+  cout << name_ << endl;
+}
+
+void plain_file::lsr()
+{
+  cout << name_ << endl;
+}
+
 size_t directory::size() const
 {
   size_t size{0};
   DEBUGF('i', "size = " << size);
   return size;
+}
+
+void directory::init_dirents(inode_ptr parent, inode_ptr self)
+{
+  dirents.insert({".", self});
+  dirents.insert({"..", parent});
 }
 
 void directory::remove(const string &filename)
@@ -129,11 +179,58 @@ void directory::remove(const string &filename)
 inode_ptr directory::mkdir(const string &dirname)
 {
   DEBUGF('i', dirname);
-  return nullptr;
+  auto dir = make_shared<inode>(file_type::DIRECTORY_TYPE, dirname);
+  dir->getContents()->init_dirents(dirents.find(".")->second, dir);
+  dirents.insert({dirname, dir});
+  return dir;
 }
 
 inode_ptr directory::mkfile(const string &filename)
 {
   DEBUGF('i', filename);
   return nullptr;
+}
+
+inode_ptr directory::getDirent(const string &name)
+{
+  return dirents.find(name)->second;
+}
+
+void directory::ls()
+{
+  cout << name_ << "/:" << endl;
+  for (auto dirent : dirents)
+  {
+    cout << "\t";
+    cout << dirent.second->get_inode_nr() << "  ";
+    cout << dirent.second->getContents()->size() << "  ";
+    cout << dirent.first;
+    if (dirent.second->getContents()->type() == "dir")
+    {
+      cout << "/";
+    }
+    cout << endl;
+  }
+}
+
+void directory::lsr()
+{
+  cout << name_ << "/:" << endl;
+  for (auto dirent : dirents)
+  {
+    cout << "\t";
+    cout << dirent.second->get_inode_nr() << "  ";
+    cout << dirent.second->getContents()->size() << "  ";
+    cout << dirent.first;
+    if (dirent.second->getContents()->type() == "dir")
+    {
+      cout << "/";
+      if (dirent.first != "." && dirent.first != "..")
+      {
+        cout << endl;
+        dirent.second->getContents()->lsr();
+      }
+    }
+    cout << endl;
+  }
 }
