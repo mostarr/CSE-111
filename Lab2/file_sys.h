@@ -20,7 +20,7 @@ enum class file_type
   PLAIN_TYPE,
   DIRECTORY_TYPE
 };
-class inode;
+class inode; // forward declerations
 class base_file;
 class plain_file;
 class directory;
