@@ -183,6 +183,9 @@ void fn_rm(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
+  auto cwdPtr = state.cwd();
+  auto cwdCts = cwdPtr->getContents();
+  cwdCts->remove(words.at(1));
 }
 
 void fn_rmr(inode_state &state, const wordvec &words)

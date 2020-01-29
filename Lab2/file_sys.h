@@ -77,6 +77,7 @@ private:
 
 public:
   inode(file_type, const string &name);
+  virtual ~inode() = default;
   int get_inode_nr() const;
   base_file_ptr getContents() const { return contents; }
 };

@@ -180,6 +180,8 @@ void directory::init_dirents(inode_ptr parent, inode_ptr self)
 void directory::remove(const string &filename)
 {
   DEBUGF('i', filename);
+  // auto file = dirents.at(filename);
+  dirents.erase(filename);
 }
 
 inode_ptr directory::mkdir(const string &dirname)
