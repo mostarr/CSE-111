@@ -59,7 +59,7 @@ void fn_cat(inode_state &state, const wordvec &words)
       {
         newCwd = newCwd->getContents()->getDirent(level);
       }
-      catch (file_error)
+      catch (file_error &e)
       {
         cerr << "cat: " << level << ": No such file or directory." << endl;
         exec::status(1);
@@ -83,7 +83,7 @@ void fn_cat(inode_state &state, const wordvec &words)
         cout << fileString << endl;
       }
     }
-    catch (file_error &)
+    catch (file_error &e &)
     {
       cerr << "cat: " << words.at(1) << ": No such file or directory." << endl;
       exec::status(1);
@@ -104,7 +104,7 @@ void fn_cd(inode_state &state, const wordvec &words)
     {
       newCwd = newCwd->getContents()->getDirent(level);
     }
-    catch (file_error)
+    catch (file_error &e)
     {
       cerr << "cd: " << level << ": No such file or directory." << endl;
     }
@@ -155,7 +155,7 @@ void fn_ls(inode_state &state, const wordvec &words)
       {
         newCwd = newCwd->getContents()->getDirent(level);
       }
-      catch (file_error)
+      catch (file_error &e)
       {
         cerr << "ls: " << level << ": No such file or directory." << endl;
       }
@@ -190,7 +190,7 @@ void fn_lsr(inode_state &state, const wordvec &words)
       {
         newCwd = newCwd->getContents()->getDirent(level);
       }
-      catch (file_error)
+      catch (file_error &e)
       {
         cerr << "cd: " << level << ": No such file or directory." << endl;
       }
@@ -217,7 +217,7 @@ void fn_make(inode_state &state, const wordvec &words)
       {
         newCwd = newCwd->getContents()->getDirent(level);
       }
-      catch (file_error)
+      catch (file_error &e)
       {
         cerr << "cd: " << level << ": No such file or directory." << endl;
       }
@@ -227,7 +227,7 @@ void fn_make(inode_state &state, const wordvec &words)
     {
       newCwd->getContents()->mkfile(fullPath.at(fullPath.size() - 1))->getContents()->writefile(sub);
     }
-    catch (file_error)
+    catch (file_error &e)
     {
       cerr << "make: " << fullPath.at(fullPath.size() - 1) << ": File or directory with specified name already exists." << endl;
     }
@@ -255,7 +255,7 @@ void fn_mkdir(inode_state &state, const wordvec &words)
         {
           newCwd = newCwd->getContents()->getDirent(level);
         }
-        catch (file_error)
+        catch (file_error &e)
         {
           cerr << "mkdir: " << level << ": No such file or directory." << endl;
         }
@@ -264,7 +264,7 @@ void fn_mkdir(inode_state &state, const wordvec &words)
       {
         newCwd->getContents()->mkdir(fullPath.at(fullPath.size() - 1));
       }
-      catch (file_error)
+      catch (file_error &e)
       {
         cerr << "mkdir: " << fullPath.at(fullPath.size() - 1) << ": File or directory with specified name already exists." << endl;
       }
