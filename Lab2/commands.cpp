@@ -83,7 +83,7 @@ void fn_cat(inode_state &state, const wordvec &words)
         cout << fileString << endl;
       }
     }
-    catch (file_error &e &)
+    catch (file_error &e)
     {
       cerr << "cat: " << words.at(1) << ": No such file or directory." << endl;
       exec::status(1);
