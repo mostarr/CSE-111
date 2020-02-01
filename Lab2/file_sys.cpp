@@ -259,10 +259,10 @@ void directory::lsr()
     {
       cout << "/";
     }
-    if (dirent != *dirents.end())
-    {
-      cout << endl;
-    }
+    // if (dirent.second != dirents.end()->second)
+    // {
+    cout << endl;
+    // }
   }
   for (auto dirent : dirents)
   {

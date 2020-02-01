@@ -48,40 +48,46 @@ void fn_cat(inode_state &state, const wordvec &words)
   DEBUGF('c', state);
   DEBUGF('c', words);
   auto cwdPtr = state.cwd();
-  wordvec path = split(words.at(1), "/");
-  auto newCwd = cwdPtr;
-  for (auto level : path)
+  wordvec files(words.cbegin() + 1, words.cend());
+  for (auto file : files)
   {
+    wordvec path = split(file, "/");
+    auto newCwd = cwdPtr;
+    for (auto level : path)
+    {
+      try
+      {
+        newCwd = newCwd->getContents()->getDirent(level);
+      }
+      catch (file_error)
+      {
+        cerr << "cat: " << level << ": No such file or directory." << endl;
+        exec::status(1);
+        continue;
+      }
+    }
     try
     {
-      newCwd = newCwd->getContents()->getDirent(level);
-    }
-    catch (file_error)
-    {
-      cerr << "cd: " << level << ": No such file or directory." << endl;
-    }
-  }
-  try
-  {
-    wordvec fileContents = newCwd->getContents()->readfile();
-    if (fileContents.size() > 0)
-    {
-      string fileString = "";
-      for (string word : fileContents)
+      wordvec fileContents = newCwd->getContents()->readfile();
+      if (fileContents.size() > 0)
       {
-        fileString += word;
-        if (word != words.back())
+        string fileString = "";
+        for (string word : fileContents)
         {
-          fileString += " ";
+          fileString += word;
+          if (word != words.back())
+          {
+            fileString += " ";
+          }
         }
+        cout << fileString << endl;
       }
-      cout << fileString << endl;
     }
-  }
-  catch (file_error &)
-  {
-    cout << "cat: " << words.at(1) << ": No such file or directory" << endl;
-    exec::status(1);
+    catch (file_error &)
+    {
+      cerr << "cat: " << words.at(1) << ": No such file or directory." << endl;
+      exec::status(1);
+    }
   }
 }
 
@@ -117,6 +123,10 @@ void fn_exit(inode_state &state, const wordvec &words)
 {
   DEBUGF('c', state);
   DEBUGF('c', words);
+  if (words.size() > 1)
+  {
+    exec::status(stoi(words.at(1)));
+  }
   throw ysh_exit();
 }
 
@@ -125,21 +135,34 @@ void fn_ls(inode_state &state, const wordvec &words)
   DEBUGF('c', state);
   DEBUGF('c', words);
   auto cwdPtr = state.cwd();
-  wordvec path = split(words.at(1), "/");
-  auto newCwd = cwdPtr;
-  for (auto level : path)
+
+  if (words.size() < 2)
   {
-    try
-    {
-      newCwd = newCwd->getContents()->getDirent(level);
-    }
-    catch (file_error)
-    {
-      cerr << "cd: " << level << ": No such file or directory." << endl;
-    }
+    auto cwdCts = cwdPtr->getContents();
+    cwdCts->ls();
+    return;
   }
-  auto cwdCts = newCwd->getContents();
-  cwdCts->ls();
+
+  wordvec files(words.cbegin() + 1, words.cend());
+  for (auto file : files)
+  {
+    wordvec path = split(file, "/");
+
+    auto newCwd = cwdPtr;
+    for (auto level : path)
+    {
+      try
+      {
+        newCwd = newCwd->getContents()->getDirent(level);
+      }
+      catch (file_error)
+      {
+        cerr << "ls: " << level << ": No such file or directory." << endl;
+      }
+    }
+    auto cwdCts = newCwd->getContents();
+    cwdCts->ls();
+  }
 }
 
 void fn_lsr(inode_state &state, const wordvec &words)
@@ -147,21 +170,34 @@ void fn_lsr(inode_state &state, const wordvec &words)
   DEBUGF('c', state);
   DEBUGF('c', words);
   auto cwdPtr = state.cwd();
-  wordvec path = split(words.at(1), "/");
-  auto newCwd = cwdPtr;
-  for (auto level : path)
+
+  if (words.size() < 2)
   {
-    try
-    {
-      newCwd = newCwd->getContents()->getDirent(level);
-    }
-    catch (file_error)
-    {
-      cerr << "cd: " << level << ": No such file or directory." << endl;
-    }
+    auto cwdCts = cwdPtr->getContents();
+    cwdCts->lsr();
+    return;
   }
-  auto cwdCts = cwdPtr->getContents();
-  cwdCts->lsr();
+
+  wordvec files(words.cbegin() + 1, words.cend());
+  for (auto file : files)
+  {
+    wordvec path = split(file, "/");
+
+    auto newCwd = cwdPtr;
+    for (auto level : path)
+    {
+      try
+      {
+        newCwd = newCwd->getContents()->getDirent(level);
+      }
+      catch (file_error)
+      {
+        cerr << "cd: " << level << ": No such file or directory." << endl;
+      }
+    }
+    auto cwdCts = newCwd->getContents();
+    cwdCts->lsr();
+  }
 }
 
 void fn_make(inode_state &state, const wordvec &words)
@@ -170,8 +206,24 @@ void fn_make(inode_state &state, const wordvec &words)
   DEBUGF('c', words);
   if (words.size() > 2)
   {
+
+    auto fullPath = split(words.at(1), "/");
+    wordvec parentDirPath(fullPath.cbegin(), fullPath.cend() - 1);
+
+    auto newCwd = state.cwd();
+    for (auto level : parentDirPath)
+    {
+      try
+      {
+        newCwd = newCwd->getContents()->getDirent(level);
+      }
+      catch (file_error)
+      {
+        cerr << "cd: " << level << ": No such file or directory." << endl;
+      }
+    }
     wordvec sub(words.begin() + 2, words.end());
-    state.cwd()->getContents()->mkfile(words.at(1))->getContents()->writefile(sub);
+    newCwd->getContents()->mkfile(fullPath.at(fullPath.size() - 1))->getContents()->writefile(sub);
   }
 }
 
@@ -181,17 +233,28 @@ void fn_mkdir(inode_state &state, const wordvec &words)
   DEBUGF('c', words);
   if (words.size() > 1)
   {
-    string name = "";
-    wordvec sub(words.begin() + 1, words.end());
-    for (string word : sub)
+
+    wordvec files(words.cbegin() + 1, words.cend());
+    for (auto file : files)
     {
-      name += word;
-      if (word != words.back())
+      wordvec fullPath = split(file, "/");
+
+      wordvec parentDirPath(fullPath.cbegin(), fullPath.cend() - 1);
+
+      auto newCwd = state.cwd();
+      for (auto level : parentDirPath)
       {
-        name += " ";
+        try
+        {
+          newCwd = newCwd->getContents()->getDirent(level);
+        }
+        catch (file_error)
+        {
+          cerr << "cd: " << level << ": No such file or directory." << endl;
+        }
       }
+      newCwd->getContents()->mkdir(fullPath.at(fullPath.size() - 1));
     }
-    state.cwd()->getContents()->mkdir(name);
   }
 }
 
