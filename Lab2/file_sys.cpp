@@ -143,6 +143,15 @@ size_t plain_file::size() const
 {
   size_t size{0};
   DEBUGF('i', "size = " << size);
+
+  for (string word : data)
+  {
+    for (int i = 0; word[i]; ++i)
+    {
+      ++size;
+    }
+  }
+  size += data.size() - 1;
   return size;
 }
 
