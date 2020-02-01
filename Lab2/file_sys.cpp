@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <unordered_map>
+#include <iomanip>
 
 using namespace std;
 
@@ -237,8 +238,8 @@ void directory::ls()
   for (auto dirent : dirents)
   {
     cout << "\t";
-    cout << dirent.second->get_inode_nr() << "  ";
-    cout << dirent.second->getContents()->size() << "  ";
+    cout << setw(6) << dirent.second->get_inode_nr() << "  ";
+    cout << setw(6) << dirent.second->getContents()->size() << "  ";
     cout << dirent.first;
     if (dirent.second->getContents()->type() == "dir")
     {
@@ -269,8 +270,8 @@ void directory::lsr()
   for (auto dirent : dirents)
   {
     cout << "\t";
-    cout << dirent.second->get_inode_nr() << "  ";
-    cout << dirent.second->getContents()->size() << "  ";
+    cout << setw(6) << dirent.second->get_inode_nr() << "  ";
+    cout << setw(6) << dirent.second->getContents()->size() << "  ";
     cout << dirent.first;
     if (dirent.second->getContents()->type() == "dir")
     {
