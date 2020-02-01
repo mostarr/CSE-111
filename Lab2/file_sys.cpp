@@ -54,7 +54,8 @@ ostream &operator<<(ostream &out, const inode_state &state)
   return out;
 }
 
-inode::inode(file_type type, const string &name) : inode_nr(next_inode_nr++)
+inode::inode(file_type type, const string &name)
+    : inode_nr(next_inode_nr++)
 {
   switch (type)
   {
@@ -202,7 +203,7 @@ inode_ptr directory::mkdir(const string &dirname)
   DEBUGF('i', dirname);
   if (dirents.find(dirname) != dirents.end())
   {
-    throw file_error("File or directory with specified name already exists.");
+    throw file_error("exists");
   }
   auto dir = make_shared<inode>(file_type::DIRECTORY_TYPE, dirname);
   dir->getContents()->init_dirents(dirents.find(".")->second, dir);
@@ -215,7 +216,7 @@ inode_ptr directory::mkfile(const string &filename)
   DEBUGF('i', filename);
   if (dirents.find(filename) != dirents.end())
   {
-    throw file_error("File or directory with specified name already exists.");
+    throw file_error("exists");
   }
   auto file = make_shared<inode>(file_type::PLAIN_TYPE, filename);
   dirents.insert({filename, file});

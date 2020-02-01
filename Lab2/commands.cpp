@@ -61,7 +61,8 @@ void fn_cat(inode_state &state, const wordvec &words)
       }
       catch (file_error &e)
       {
-        cerr << "cat: " << level << ": No such file or directory." << endl;
+        cerr << "cat: " << level;
+        cerr << ": No such file or directory." << endl;
         exec::status(1);
         continue;
       }
@@ -85,7 +86,8 @@ void fn_cat(inode_state &state, const wordvec &words)
     }
     catch (file_error &e)
     {
-      cerr << "cat: " << words.at(1) << ": No such file or directory." << endl;
+      cerr << "cat: " << words.at(1);
+      cerr << ": No such file or directory." << endl;
       exec::status(1);
     }
   }
@@ -106,7 +108,8 @@ void fn_cd(inode_state &state, const wordvec &words)
     }
     catch (file_error &e)
     {
-      cerr << "cd: " << level << ": No such file or directory." << endl;
+      cerr << "cd: " << level;
+      cerr << ": No such file or directory." << endl;
     }
   }
   state.cwd(newCwd);
@@ -157,7 +160,8 @@ void fn_ls(inode_state &state, const wordvec &words)
       }
       catch (file_error &e)
       {
-        cerr << "ls: " << level << ": No such file or directory." << endl;
+        cerr << "ls: " << level;
+        cerr << ": No such file or directory." << endl;
       }
     }
     auto cwdCts = newCwd->getContents();
@@ -192,7 +196,8 @@ void fn_lsr(inode_state &state, const wordvec &words)
       }
       catch (file_error &e)
       {
-        cerr << "cd: " << level << ": No such file or directory." << endl;
+        cerr << "lsr: " << level;
+        cerr << ": No such file or directory." << endl;
       }
     }
     auto cwdCts = newCwd->getContents();
@@ -219,17 +224,24 @@ void fn_make(inode_state &state, const wordvec &words)
       }
       catch (file_error &e)
       {
-        cerr << "cd: " << level << ": No such file or directory." << endl;
+        cerr << "make: " << level;
+        cerr << ": No such file or directory." << endl;
       }
     }
     wordvec sub(words.begin() + 2, words.end());
     try
     {
-      newCwd->getContents()->mkfile(fullPath.at(fullPath.size() - 1))->getContents()->writefile(sub);
+      newCwd->getContents()
+          ->mkfile(
+              fullPath.at(fullPath.size() - 1))
+          ->getContents()
+          ->writefile(sub);
     }
     catch (file_error &e)
     {
-      cerr << "make: " << fullPath.at(fullPath.size() - 1) << ": File or directory with specified name already exists." << endl;
+      cerr << "make: " << fullPath.at(fullPath.size() - 1);
+      cerr << ": File or directory with specified";
+      cerr << " name already exists." << endl;
     }
   }
 }
@@ -257,7 +269,8 @@ void fn_mkdir(inode_state &state, const wordvec &words)
         }
         catch (file_error &e)
         {
-          cerr << "mkdir: " << level << ": No such file or directory." << endl;
+          cerr << "mkdir: " << level;
+          cerr << ": No such file or directory." << endl;
         }
       }
       try
@@ -266,7 +279,9 @@ void fn_mkdir(inode_state &state, const wordvec &words)
       }
       catch (file_error &e)
       {
-        cerr << "mkdir: " << fullPath.at(fullPath.size() - 1) << ": File or directory with specified name already exists." << endl;
+        cerr << "mkdir: " << fullPath.at(fullPath.size() - 1);
+        cerr << ": File or directory with specified";
+        cerr << " name already exists." << endl;
       }
     }
   }
