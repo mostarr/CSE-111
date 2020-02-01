@@ -223,7 +223,14 @@ void fn_make(inode_state &state, const wordvec &words)
       }
     }
     wordvec sub(words.begin() + 2, words.end());
-    newCwd->getContents()->mkfile(fullPath.at(fullPath.size() - 1))->getContents()->writefile(sub);
+    try
+    {
+      newCwd->getContents()->mkfile(fullPath.at(fullPath.size() - 1))->getContents()->writefile(sub);
+    }
+    catch (file_error)
+    {
+      cerr << "make: " << fullPath.at(fullPath.size() - 1) << ": File or directory with specified name already exists." << endl;
+    }
   }
 }
 
@@ -250,10 +257,17 @@ void fn_mkdir(inode_state &state, const wordvec &words)
         }
         catch (file_error)
         {
-          cerr << "cd: " << level << ": No such file or directory." << endl;
+          cerr << "mkdir: " << level << ": No such file or directory." << endl;
         }
       }
-      newCwd->getContents()->mkdir(fullPath.at(fullPath.size() - 1));
+      try
+      {
+        newCwd->getContents()->mkdir(fullPath.at(fullPath.size() - 1));
+      }
+      catch (file_error)
+      {
+        cerr << "mkdir: " << fullPath.at(fullPath.size() - 1) << ": File or directory with specified name already exists." << endl;
+      }
     }
   }
 }

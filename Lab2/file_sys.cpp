@@ -190,6 +190,10 @@ void directory::remove(const string &filename)
 inode_ptr directory::mkdir(const string &dirname)
 {
   DEBUGF('i', dirname);
+  if (dirents.find(dirname) != dirents.end())
+  {
+    throw file_error("File or directory with specified name already exists.");
+  }
   auto dir = make_shared<inode>(file_type::DIRECTORY_TYPE, dirname);
   dir->getContents()->init_dirents(dirents.find(".")->second, dir);
   dirents.insert({dirname, dir});
@@ -199,6 +203,10 @@ inode_ptr directory::mkdir(const string &dirname)
 inode_ptr directory::mkfile(const string &filename)
 {
   DEBUGF('i', filename);
+  if (dirents.find(filename) != dirents.end())
+  {
+    throw file_error("File or directory with specified name already exists.");
+  }
   auto file = make_shared<inode>(file_type::PLAIN_TYPE, filename);
   dirents.insert({filename, file});
   return file;
