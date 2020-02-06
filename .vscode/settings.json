@@ -10,6 +10,8 @@
     "memory": "cpp",
     "xtree": "cpp",
     "system_error": "cpp",
-    "xlocale": "cpp"
+    "xlocale": "cpp",
+    "iostream": "cpp",
+    "iomanip": "cpp"
   }
 }
