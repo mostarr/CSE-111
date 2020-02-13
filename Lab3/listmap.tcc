@@ -13,37 +13,65 @@
 // listmap::~listmap()
 //
 template <typename key_t, typename mapped_t, class less_t>
-listmap<key_t,mapped_t,less_t>::~listmap() {
-   DEBUGF ('l', reinterpret_cast<const void*> (this));
+listmap<key_t, mapped_t, less_t>::~listmap()
+{
+  DEBUGF('l', reinterpret_cast<const void *>(this));
 }
 
 //
 // iterator listmap::insert (const value_type&)
 //
 template <typename key_t, typename mapped_t, class less_t>
-typename listmap<key_t,mapped_t,less_t>::iterator
-listmap<key_t,mapped_t,less_t>::insert (const value_type& pair) {
-   DEBUGF ('l', &pair << "->" << pair);
-   return iterator();
+typename listmap<key_t, mapped_t, less_t>::iterator
+listmap<key_t, mapped_t, less_t>::insert(const value_type &pair)
+{
+  DEBUGF('l', &pair << "->" << pair);
+
+  node *newNode = new node{anchor()->next, anchor(), pair};
+
+  auto tempNext = anchor()->next;
+  anchor()->next = newNode;
+  tempNext->prev = newNode;
+
+  // cout << "Post Insert:" << endl;
+  // cout << "Value -> " << &pair << "->" << pair << endl;
+  // cout << "newNode->value -> " << newNode->value << endl;
+  // cout << "&Value.first -> " << &pair.first << endl;
+  // cout << "*&Value.first -> " << *&pair.first << endl;
+  // cout << "Anchor -> " << anchor() << endl;
+  // cout << "tempNext -> " << tempNext << endl;
+  // cout << "newNode -> " << &newNode << endl;
+  // cout << "anchor->next -> " << anchor()->next << endl;
+  // cout << "newNode->next -> " << newNode->next << endl;
+  // cout << "anchor()->prev -> " << anchor()->prev << endl;
+  // cout << "newNode->prev -> " << newNode->prev << endl;
+
+  return iterator();
 }
 
 //
 // listmap::find(const key_type&)
 //
 template <typename key_t, typename mapped_t, class less_t>
-typename listmap<key_t,mapped_t,less_t>::iterator
-listmap<key_t,mapped_t,less_t>::find (const key_type& that) {
-   DEBUGF ('l', that);
-   return iterator();
+typename listmap<key_t, mapped_t, less_t>::iterator
+listmap<key_t, mapped_t, less_t>::find(const key_type &that)
+{
+  DEBUGF('l', that);
+  for (listmap::iterator itor = begin(); itor != end(); ++itor)
+  {
+    if (itor->first == that)
+      return itor;
+  }
+  return anchor();
 }
 
 //
 // iterator listmap::erase (iterator position)
 //
 template <typename key_t, typename mapped_t, class less_t>
-typename listmap<key_t,mapped_t,less_t>::iterator
-listmap<key_t,mapped_t,less_t>::erase (iterator position) {
-   DEBUGF ('l', &*position);
-   return iterator();
+typename listmap<key_t, mapped_t, less_t>::iterator
+listmap<key_t, mapped_t, less_t>::erase(iterator position)
+{
+  DEBUGF('l', &*position);
+  return iterator();
 }
-
