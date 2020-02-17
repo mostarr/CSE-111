@@ -49,23 +49,17 @@ xpair<string, str_str_pair> matchLine(string &line)
   regex key_value_regex{R"(^\s*(.*?)\s*=\s*(.*?)\s*$)"};
   regex trimmed_regex{R"(^\s*([^=]+?)\s*$)"};
 
-  cout << endl
-       << "input: \"" << line << "\"" << endl;
   smatch result;
   if (regex_search(line, result, comment_regex))
   {
-    cout << "Comment or empty line." << endl;
     return {"c", {"", ""}};
   }
   if (regex_search(line, result, key_value_regex))
   {
-    cout << "key  : \"" << result[1] << "\"" << endl;
-    cout << "value: \"" << result[2] << "\"" << endl;
     return {"kv", {result[1], result[2]}};
   }
   else if (regex_search(line, result, trimmed_regex))
   {
-    cout << "query: \"" << result[1] << "\"" << endl;
     return {"q", {result[1], ""}};
   }
   else
@@ -80,6 +74,7 @@ str_str_map &runFile(istream &infile, str_str_map &_map)
   {
     string line;
     getline(infile, line);
+    cout << line << endl;
     if (infile.eof())
     {
       break;
@@ -89,7 +84,8 @@ str_str_map &runFile(istream &infile, str_str_map &_map)
       continue;
     if (lineResult.first == "kv")
     {
-      if (lineResult.second.first == "" && lineResult.second.second == "")
+      if (lineResult.second.first == "" &&
+          lineResult.second.second == "")
       {
         for (str_str_pair pair : _map)
         {
@@ -129,10 +125,9 @@ str_str_map &runFile(istream &infile, str_str_map &_map)
   return _map;
 }
 
-str_str_map &iterFiles(int argc, char **argv, str_str_map &output)
+int iterFiles(int argc, char **argv, str_str_map &output)
 {
-  // if (&argv[optind] == &argv[argc])
-  //   filenames.push_back(cin_name);
+  int status = 0;
   for (char **argp = &argv[optind]; argp != &argv[argc]; ++argp)
   {
     if (*argp == cin_name)
@@ -143,6 +138,7 @@ str_str_map &iterFiles(int argc, char **argv, str_str_map &output)
       ifstream infile(*argp);
       if (infile.fail())
       {
+        status = 1;
         cerr << argv[0] << ": " << *argp << ": "
              << strerror(errno) << endl;
       }
@@ -154,41 +150,17 @@ str_str_map &iterFiles(int argc, char **argv, str_str_map &output)
     }
   }
 
-  return output;
+  return status;
 }
 
 int main(int argc, char **argv)
 {
   sys_info::execname(argv[0]);
   scan_options(argc, argv);
-  // int status = 0;
+  int status = 0;
   str_str_map test;
 
-  iterFiles(argc, argv, test);
+  status = iterFiles(argc, argv, test);
 
-  // for (str_str_map::iterator itor = test.begin();
-  //      itor != test.end(); ++itor)
-  // {
-  //   cout << "&*itor: " << &*itor << endl;
-  //   cout << "*itor: " << *itor << endl;
-  // }
-
-  for (char **argp = &argv[optind]; argp != &argv[argc]; ++argp)
-  {
-    str_str_pair pair(*argp, to_string<int>(argp - argv));
-    cout << "Before insert: " << pair << endl;
-    test.insert(pair);
-  }
-
-  for (str_str_map::iterator itor = test.begin();
-       itor != test.end(); ++itor)
-  {
-    cout << "During iteration: " << *itor << endl;
-  }
-
-  str_str_map::iterator itor = test.begin();
-  test.erase(itor);
-
-  cout << "EXIT_SUCCESS" << endl;
-  return EXIT_SUCCESS;
+  return status;
 }
