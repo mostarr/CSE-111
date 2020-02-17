@@ -16,6 +16,13 @@ template <typename key_t, typename mapped_t, class less_t>
 listmap<key_t, mapped_t, less_t>::~listmap()
 {
   DEBUGF('l', reinterpret_cast<const void *>(this));
+  node *current = anchor()->next;
+  while (current != anchor())
+  {
+    node *temp = current;
+    current = current->next;
+    delete temp;
+  }
 }
 
 //
@@ -84,6 +91,6 @@ listmap<key_t, mapped_t, less_t>::erase(iterator position)
   iterator next = position.where->next;
   before.where->next = next.where;
   next.where->prev = before.where;
-  // delete &position;
+  delete position.where;
   return next;
 }

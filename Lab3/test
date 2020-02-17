@@ -1,13 +1,4 @@
-b=2
-a=1
-d=4
-c=3
-=
+d=1
 d=
-=
-
-a1=yay
-b1=yay
-c1=yay
-=
-=yay
+a=b
+c=d
