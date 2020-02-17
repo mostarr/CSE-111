@@ -99,7 +99,8 @@ str_str_map &runFile(istream &infile, str_str_map &_map)
       }
       if (lineResult.second.second == "")
       {
-        _map.erase(_map.find(lineResult.second.first));
+        if (_map.find(lineResult.second.first) != _map.end())
+          _map.erase(_map.find(lineResult.second.first));
         continue;
       }
       if (lineResult.second.first == "")

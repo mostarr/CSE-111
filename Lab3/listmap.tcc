@@ -80,5 +80,10 @@ typename listmap<key_t, mapped_t, less_t>::iterator
 listmap<key_t, mapped_t, less_t>::erase(iterator position)
 {
   DEBUGF('l', &*position);
-  return iterator();
+  iterator before = position.where->prev;
+  iterator next = position.where->next;
+  before.where->next = next.where;
+  next.where->prev = before.where;
+  // delete &position;
+  return next;
 }
