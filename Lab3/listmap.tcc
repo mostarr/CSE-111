@@ -47,19 +47,6 @@ listmap<key_t, mapped_t, less_t>::insert(const value_type &pair)
   insertBefore->prev->next = newNode;
   insertBefore->prev = newNode;
 
-  // cout << "Post Insert:" << endl;
-  // cout << "Value -> " << &pair << "->" << pair << endl;
-  // cout << "newNode->value -> " << newNode->value << endl;
-  // cout << "&Value.first -> " << &pair.first << endl;
-  // cout << "*&Value.first -> " << *&pair.first << endl;
-  // cout << "Anchor -> " << anchor() << endl;
-  // cout << "tempNext -> " << tempNext << endl;
-  // cout << "newNode -> " << &newNode << endl;
-  // cout << "anchor->next -> " << anchor()->next << endl;
-  // cout << "newNode->next -> " << newNode->next << endl;
-  // cout << "anchor()->prev -> " << anchor()->prev << endl;
-  // cout << "newNode->prev -> " << newNode->prev << endl;
-
   return iterator();
 }
 
