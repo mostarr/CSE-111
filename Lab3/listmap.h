@@ -6,7 +6,8 @@
 #include "xless.h"
 #include "xpair.h"
 
-template <typename key_t, typename mapped_t, class less_t = xless<key_t>>
+template <typename key_t, typename mapped_t,
+          class less_t = xless<key_t>>
 class listmap
 {
 public:
@@ -26,7 +27,9 @@ private:
   struct node : link
   {
     value_type value{};
-    node(node *next_, node *prev_, const value_type &value_) : link(next_, prev_), value(value_) {}
+    node(node *next_, node *prev_,
+         const value_type &value_)
+        : link(next_, prev_), value(value_) {}
   };
   node *anchor() { return static_cast<node *>(&anchor_); }
   link anchor_{anchor(), anchor()};
