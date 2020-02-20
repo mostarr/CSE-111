@@ -34,8 +34,8 @@ cixd: ${CIXDOBJS}
 	${COMPILECPP} -o $@ ${CIXDOBJS}
 
 %.o: %.cpp
-	- ${UTILBIN}/checksource $<
-	- ${UTILBIN}/cpplint.py.perl $<
+	# - ${UTILBIN}/checksource $<
+	# - ${UTILBIN}/cpplint.py.perl $<
 	${COMPILECPP} -c $<
 
 ci: ${ALLSOURCE}
