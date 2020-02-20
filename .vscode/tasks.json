@@ -1,0 +1,14 @@
+{
+  "tasks": [
+    {
+      "type": "shell",
+      "label": "make build project",
+      "command": "cd ${fileDirname}/../Lab3 && pwd && make",
+      "args": [],
+      "options": {
+        "cwd": "/usr/bin"
+      }
+    }
+  ],
+  "version": "2.0.0"
+}
