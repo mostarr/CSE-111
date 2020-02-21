@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <fstream>
 #include <vector>
 using namespace std;
 
@@ -62,7 +63,10 @@ void reply_put(accepted_socket &client_sock, cix_header &header)
   recv_packet(client_sock, buffer.get(), header.nbytes);
   outlog << "received " << header.nbytes << " bytes" << endl;
   buffer[header.nbytes] = '\0';
-  outlog << buffer.get();
+  outlog << "recd: " << buffer.get() << endl;
+
+  ofstream outfile(header.filename, ofstream::binary);
+  outfile.write(buffer.get(), header.nbytes);
 
   header.command = cix_command::ACK;
   memset(header.filename, 0, FILENAME_SIZE);

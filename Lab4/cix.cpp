@@ -82,6 +82,7 @@ void cix_put(client_socket &server, string &filename)
     outlog << "Reading " << length << " characters... " << endl;
     // read data as a block:
     file.read(buffer.get(), length);
+    outlog << "read: " << buffer.get() << endl;
     cix_header header;
     header.command = cix_command::PUT;
     header.nbytes = length;
@@ -89,6 +90,7 @@ void cix_put(client_socket &server, string &filename)
     strcpy(header.filename, filename.c_str());
     outlog << "sending header " << header << endl;
     send_packet(server, &header, sizeof header);
+    // send_packet(server, &header, sizeof header);
     send_packet(server, buffer.get(), length);
     outlog << "sent data" << endl;
 
