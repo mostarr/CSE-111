@@ -59,6 +59,7 @@ void reply_ls(accepted_socket &client_sock, cix_header &header)
 
 void reply_put(accepted_socket &client_sock, cix_header &header)
 {
+  // TODO: errors
   auto buffer = make_unique<char[]>(header.nbytes + 1);
   recv_packet(client_sock, buffer.get(), header.nbytes);
   outlog << "received " << header.nbytes << " bytes" << endl;
@@ -72,6 +73,41 @@ void reply_put(accepted_socket &client_sock, cix_header &header)
   memset(header.filename, 0, FILENAME_SIZE);
   header.nbytes = 0;
   send_packet(client_sock, &header, sizeof header);
+}
+
+void reply_get(accepted_socket &client_sock, cix_header &header)
+{
+  ifstream file(header.filename, ifstream::binary);
+  if (file)
+  {
+
+    // get length of file: (from cplusplus.org example)
+    file.seekg(0, file.end);
+    int length = file.tellg();
+    file.seekg(0, file.beg);
+
+    auto buffer = make_unique<char[]>(length);
+
+    outlog << "Reading " << length << " characters... " << endl;
+    // read data as a block:
+    file.read(buffer.get(), length);
+    outlog << "read: " << buffer.get() << endl;
+
+    cix_header resHeader;
+    resHeader.command = cix_command::FILEOUT;
+    resHeader.nbytes = length;
+
+    // strcpy(header.filename, filename.c_str());
+    outlog << "sending header " << resHeader << endl;
+    send_packet(client_sock, &resHeader, sizeof resHeader);
+    // send_packet(server, &header, sizeof header);
+    send_packet(client_sock, buffer.get(), length);
+    outlog << "sent data" << endl;
+  }
+  else
+  {
+    outlog << "Could not load file: " << header.filename << endl;
+  }
 }
 
 void run_server(accepted_socket &client_sock)
@@ -92,6 +128,9 @@ void run_server(accepted_socket &client_sock)
         break;
       case cix_command::PUT:
         reply_put(client_sock, header);
+        break;
+      case cix_command::GET:
+        reply_get(client_sock, header);
         break;
       default:
         outlog << "invalid client header:" << header << endl;

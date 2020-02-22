@@ -27,6 +27,7 @@ unordered_map<string, cix_command> command_map{
     {"help", cix_command::HELP},
     {"ls", cix_command::LS},
     {"put", cix_command::PUT},
+    {"get", cix_command::GET},
 };
 
 static const char help[] = R"||(
@@ -68,6 +69,8 @@ void cix_ls(client_socket &server)
 
 void cix_put(client_socket &server, string &filename)
 {
+  // TODO: errors
+
   ifstream file(filename, ifstream::binary);
   if (file)
   {
@@ -101,6 +104,33 @@ void cix_put(client_socket &server, string &filename)
   else
   {
     outlog << "Could not load file: " << filename << endl;
+  }
+}
+
+void cix_get(client_socket &server, string &filename)
+{
+  cix_header header;
+  header.command = cix_command::GET;
+  strcpy(header.filename, filename.c_str());
+  outlog << "sending header " << header << endl;
+  send_packet(server, &header, sizeof header);
+  recv_packet(server, &header, sizeof header);
+  outlog << "received header " << header << endl;
+  if (header.command != cix_command::FILEOUT)
+  {
+    outlog << "sent GET, server did not return FILEOUT" << endl;
+    outlog << "server returned " << header << endl;
+  }
+  else
+  {
+    auto buffer = make_unique<char[]>(header.nbytes + 1);
+    recv_packet(server, buffer.get(), header.nbytes);
+    outlog << "received " << header.nbytes << " bytes" << endl;
+    buffer[header.nbytes] = '\0';
+    outlog << "recd: " << buffer.get() << endl;
+
+    ofstream outfile(filename, ofstream::binary);
+    outfile.write(buffer.get(), header.nbytes);
   }
 }
 
@@ -158,6 +188,9 @@ int main(int argc, char **argv)
         break;
       case cix_command::PUT:
         cix_put(server, tokens.at(1));
+        break;
+      case cix_command::GET:
+        cix_get(server, tokens.at(1));
         break;
       default:
         outlog << line << ": invalid command" << endl;
