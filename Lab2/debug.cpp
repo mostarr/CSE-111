@@ -11,23 +11,29 @@ using namespace std;
 
 debugflags::flagset_ debugflags::flags_{};
 
-void debugflags::setflags(const string& initflags) {
-    for (const unsigned char flag : initflags) {
-        if (flag == '@') flags_.set();
-        else flags_.set(flag, true);
-    }
+void debugflags::setflags(const string &initflags)
+{
+  for (const unsigned char flag : initflags)
+  {
+    if (flag == '@')
+      flags_.set();
+    else
+      flags_.set(flag, true);
+  }
 }
 
 // getflag -
 //    Check to see if a certain flag is on.
 
-bool debugflags::getflag(char flag) {
-    // WARNING: Don't TRACE this function or the stack will blow up.
-    return flags_.test(static_cast<unsigned char> (flag));
+bool debugflags::getflag(char flag)
+{
+  // WARNING: Don't TRACE this function or the stack will blow up.
+  return flags_.test(static_cast<unsigned char>(flag));
 }
 
-void debugflags::where(char flag, const char* file, int line,
-    const char* pretty_function) {
-    cout << exec::execname() << ": DEBUG(" << flag << ") "
-        << file << "[" << line << "] " << pretty_function << endl;
+void debugflags::where(char flag, const char *file, int line,
+                       const char *pretty_function)
+{
+  cout << exec::execname() << ": DEBUG(" << flag << ") "
+       << file << "[" << line << "] " << pretty_function << endl;
 }

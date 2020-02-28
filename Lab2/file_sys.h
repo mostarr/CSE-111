@@ -17,8 +17,8 @@ using namespace std;
 
 enum class file_type
 {
-    PLAIN_TYPE,
-    DIRECTORY_TYPE
+  PLAIN_TYPE,
+  DIRECTORY_TYPE
 };
 class inode; // forward declerations
 class base_file;
@@ -35,23 +35,23 @@ ostream &operator<<(ostream &, file_type);
 
 class inode_state
 {
-    friend class inode;
-    friend ostream &operator<<(ostream &out, const inode_state &);
+  friend class inode;
+  friend ostream &operator<<(ostream &out, const inode_state &);
 
 private:
-    inode_ptr root{nullptr};
-    inode_ptr cwd_{nullptr};
-    string prompt_{"% "};
+  inode_ptr root{nullptr};
+  inode_ptr cwd_{nullptr};
+  string prompt_{"% "};
 
 public:
-    inode_state(const inode_state &) = delete;            // copy ctor
-    inode_state &operator=(const inode_state &) = delete; // op=
-    inode_state();
-    ~inode_state() = default;
-    const string &prompt() const;
-    void prompt(const string &prompt);
-    const inode_ptr &cwd() const;
-    void cwd(inode_ptr);
+  inode_state(const inode_state &) = delete;            // copy ctor
+  inode_state &operator=(const inode_state &) = delete; // op=
+  inode_state();
+  ~inode_state() = default;
+  const string &prompt() const;
+  void prompt(const string &prompt);
+  const inode_ptr &cwd() const;
+  void cwd(inode_ptr);
 };
 
 // class inode -
@@ -69,17 +69,17 @@ public:
 
 class inode
 {
-    friend class inode_state;
+  friend class inode_state;
 
 private:
-    static int next_inode_nr;
-    int inode_nr;
-    base_file_ptr contents;
+  static int next_inode_nr;
+  int inode_nr;
+  base_file_ptr contents;
 
 public:
-    inode(file_type, const string &name);
-    int get_inode_nr() const;
-    base_file_ptr getContents() const { return contents; }
+  inode(file_type, const string &name);
+  int get_inode_nr() const;
+  base_file_ptr getContents() const { return contents; }
 };
 
 // class base_file -
@@ -90,34 +90,34 @@ public:
 class file_error : public runtime_error
 {
 public:
-    explicit file_error(const string &what);
+  explicit file_error(const string &what);
 };
 
 class base_file
 {
 protected:
-    string name_;
-    base_file() = default;
-    virtual const string error_file_type() const = 0;
+  string name_;
+  base_file() = default;
+  virtual const string error_file_type() const = 0;
 
 public:
-    virtual const string type() { return "base"; };
-    virtual ~base_file() = default;
-    base_file(const base_file &) = delete;
-    base_file &operator=(const base_file &) = delete;
-    virtual size_t size() const = 0;
-    virtual const wordvec &readfile() const;
-    virtual void writefile(const wordvec &newdata);
-    virtual void remove(const string &);
-    virtual inode_ptr mkdir(const string &dirname);
-    virtual inode_ptr mkfile(const string &filename);
-    virtual string name();
-    virtual void name(const string name);
-    virtual void ls();
-    virtual void lsr();
-    virtual void init_dirents(inode_ptr parent, inode_ptr self);
-    virtual inode_ptr getDirent(const string &name);
-    virtual void pwd();
+  virtual const string type() { return "base"; };
+  virtual ~base_file() = default;
+  base_file(const base_file &) = delete;
+  base_file &operator=(const base_file &) = delete;
+  virtual size_t size() const = 0;
+  virtual const wordvec &readfile() const;
+  virtual void writefile(const wordvec &newdata);
+  virtual void remove(const string &);
+  virtual inode_ptr mkdir(const string &dirname);
+  virtual inode_ptr mkfile(const string &filename);
+  virtual string name();
+  virtual void name(const string name);
+  virtual void ls();
+  virtual void lsr();
+  virtual void init_dirents(inode_ptr parent, inode_ptr self);
+  virtual inode_ptr getDirent(const string &name);
+  virtual void pwd();
 };
 
 // class plain_file -
@@ -132,19 +132,19 @@ public:
 class plain_file : public base_file
 {
 private:
-    wordvec data;
-    virtual const string error_file_type() const override
-    {
-        return "plain file";
-    }
+  wordvec data;
+  virtual const string error_file_type() const override
+  {
+    return "plain file";
+  }
 
 public:
-    virtual const string type() { return "file"; };
-    virtual size_t size() const override;
-    virtual const wordvec &readfile() const override;
-    virtual void writefile(const wordvec &newdata) override;
-    virtual void ls() override;
-    virtual void lsr() override;
+  virtual const string type() { return "file"; };
+  virtual size_t size() const override;
+  virtual const wordvec &readfile() const override;
+  virtual void writefile(const wordvec &newdata) override;
+  virtual void ls() override;
+  virtual void lsr() override;
 };
 
 // class directory -
@@ -168,24 +168,24 @@ public:
 class directory : public base_file
 {
 private:
-    // Must be a map, not unordered_map, so printing is lexicographic
-    map<string, inode_ptr> dirents;
-    virtual const string error_file_type() const override
-    {
-        return "directory";
-    }
+  // Must be a map, not unordered_map, so printing is lexicographic
+  map<string, inode_ptr> dirents;
+  virtual const string error_file_type() const override
+  {
+    return "directory";
+  }
 
 public:
-    virtual const string type() { return "dir"; };
-    virtual size_t size() const override;
-    virtual void remove(const string &filename) override;
-    virtual inode_ptr mkdir(const string &dirname) override;
-    virtual inode_ptr mkfile(const string &filename) override;
-    virtual void ls() override;
-    virtual void lsr() override;
-    virtual void init_dirents(inode_ptr parent, inode_ptr self) override;
-    virtual inode_ptr getDirent(const string &name) override;
-    virtual void pwd() override;
+  virtual const string type() { return "dir"; };
+  virtual size_t size() const override;
+  virtual void remove(const string &filename) override;
+  virtual inode_ptr mkdir(const string &dirname) override;
+  virtual inode_ptr mkfile(const string &filename) override;
+  virtual void ls() override;
+  virtual void lsr() override;
+  virtual void init_dirents(inode_ptr parent, inode_ptr self) override;
+  virtual inode_ptr getDirent(const string &name) override;
+  virtual void pwd() override;
 };
 
 #endif

@@ -18,17 +18,18 @@ using namespace std;
 //    Used by the DEBUGF macro to check to see if a flag has been set.
 //    Not to be called by user code.
 
-class debugflags {
+class debugflags
+{
 private:
-    using flagset_ = bitset<UCHAR_MAX + 1>;
-    static flagset_ flags_;
-public:
-    static void setflags(const string& optflags);
-    static bool getflag(char flag);
-    static void where(char flag, const char* file, int line,
-        const char* pretty_function);
-};
+  using flagset_ = bitset<UCHAR_MAX + 1>;
+  static flagset_ flags_;
 
+public:
+  static void setflags(const string &optflags);
+  static bool getflag(char flag);
+  static void where(char flag, const char *file, int line,
+                    const char *pretty_function);
+};
 
 // DEBUGF -
 //    Macro which expands into trace code.  First argument is a
@@ -40,23 +41,27 @@ public:
 //    Traces are preceded by filename, line number, and function.
 
 #ifdef NDEBUG
-#define DEBUGF(FLAG,CODE) ;
-#define DEBUGS(FLAG,STMT) ;
+#define DEBUGF(FLAG, CODE) ;
+#define DEBUGS(FLAG, STMT) ;
 #else
-#define DEBUGF(FLAG,CODE) { \
-           if (debugflags::getflag (FLAG)) { \
-              debugflags::where (FLAG, __FILE__, __LINE__, \
-                                 __PRETTY_FUNCTION__); \
-              cerr << CODE << endl; \
-           } \
-        }
-#define DEBUGS(FLAG,STMT) { \
-           if (debugflags::getflag (FLAG)) { \
-              debugflags::where (FLAG, __FILE__, __LINE__, \
-                                 __PRETTY_FUNCTION__); \
-              STMT; \
-           } \
-        }
+#define DEBUGF(FLAG, CODE)                        \
+  {                                               \
+    if (debugflags::getflag(FLAG))                \
+    {                                             \
+      debugflags::where(FLAG, __FILE__, __LINE__, \
+                        __PRETTY_FUNCTION__);     \
+      cerr << CODE << endl;                       \
+    }                                             \
+  }
+#define DEBUGS(FLAG, STMT)                        \
+  {                                               \
+    if (debugflags::getflag(FLAG))                \
+    {                                             \
+      debugflags::where(FLAG, __FILE__, __LINE__, \
+                        __PRETTY_FUNCTION__);     \
+      STMT;                                       \
+    }                                             \
+  }
 #endif
 
 #endif
