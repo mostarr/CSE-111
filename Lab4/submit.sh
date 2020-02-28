@@ -1,12 +1,12 @@
-# tr -d '\15\32' < Makefile > Makefile
+# dos2unix *.cpp *.h Makefile
 
 # for f in *.cpp
 # do
-#   tr -d '\15\32' < $f > $f
+#   dos2unix $f
 # done
 # for f in *.h
 # do
-#   tr -d '\15\32' < $f > $f
+#   dos2unix $f
 # done
 
 scp -r *.cpp *.h *.tcc Makefile mostarr@unix.ucsc.edu:~/mostarr/Lab4

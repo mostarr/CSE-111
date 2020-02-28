@@ -66,8 +66,10 @@ void base_socket::accept(base_socket &socket) const
 {
   int addr_length = sizeof socket.socket_addr;
   socket.socket_fd = ::accept(socket_fd,
-                              reinterpret_cast<sockaddr *>(&socket.socket_addr),
-                              reinterpret_cast<socklen_t *>(&addr_length));
+                              reinterpret_cast<sockaddr *>(
+                                  &socket.socket_addr),
+                              reinterpret_cast<socklen_t *>(
+                                  &addr_length));
   if (socket.socket_fd < 0)
     throw socket_sys_error("accept");
 }
@@ -101,7 +103,8 @@ void base_socket::connect(const string host, const in_port_t port)
                          reinterpret_cast<sockaddr *>(&socket_addr),
                          sizeof(socket_addr));
   if (status < 0)
-    throw socket_sys_error("connect(" + host + ":" + to_string(port) + ")");
+    throw socket_sys_error("connect(" +
+                           host + ":" + to_string(port) + ")");
 }
 
 void base_socket::set_socket_fd(int fd)
@@ -111,7 +114,8 @@ void base_socket::set_socket_fd(int fd)
                        reinterpret_cast<sockaddr *>(&socket_addr),
                        &addrlen);
   if (rc < 0)
-    throw socket_sys_error("set_socket_fd(" + to_string(fd) + "): getpeername");
+    throw socket_sys_error("set_socket_fd(" + to_string(fd) +
+                           "): getpeername");
   socket_fd = fd;
   if (socket_addr.sin_family != AF_INET)
     throw socket_error("address not AF_INET");
@@ -146,7 +150,8 @@ server_socket::server_socket(in_port_t port)
 
 string to_string(const hostinfo &info)
 {
-  return info.hostname + " (" + to_string(info.addresses[0]) + ")";
+  return info.hostname + " (" +
+         to_string(info.addresses[0]) + ")";
 }
 
 string to_string(const in_addr &ipv4_addr)
@@ -162,7 +167,8 @@ string to_string(const in_addr &ipv4_addr)
 string to_string(const base_socket &sock)
 {
   hostinfo info(sock.socket_addr.sin_addr);
-  return info.hostname + " (" + to_string(info.addresses[0]) + ") port " + to_string(ntohs(sock.socket_addr.sin_port));
+  return info.hostname + " (" + to_string(info.addresses[0]) +
+         ") port " + to_string(ntohs(sock.socket_addr.sin_port));
 }
 
 string init_hostname(hostent *host)
@@ -208,12 +214,14 @@ hostinfo::hostinfo() : hostinfo(localhost())
 {
 }
 
-hostinfo::hostinfo(const string &hostname_) : hostinfo(::gethostbyname(hostname_.c_str()))
+hostinfo::hostinfo(const string &hostname_)
+    : hostinfo(::gethostbyname(hostname_.c_str()))
 {
 }
 
-hostinfo::hostinfo(const in_addr &ipv4_addr) : hostinfo(::gethostbyaddr(&ipv4_addr, sizeof ipv4_addr,
-                                                                        AF_INET))
+hostinfo::hostinfo(const in_addr &ipv4_addr)
+    : hostinfo(::gethostbyaddr(&ipv4_addr, sizeof ipv4_addr,
+                               AF_INET))
 {
 }
 
