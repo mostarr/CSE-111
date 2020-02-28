@@ -59,19 +59,24 @@ void reply_ls(accepted_socket &client_sock, cix_header &header)
 
 void reply_put(accepted_socket &client_sock, cix_header &header)
 {
-  // TODO: errors
   auto buffer = make_unique<char[]>(header.nbytes + 1);
   recv_packet(client_sock, buffer.get(), header.nbytes);
   outlog << "received " << header.nbytes << " bytes" << endl;
   buffer[header.nbytes] = '\0';
-  outlog << "recd: " << buffer.get() << endl;
 
   ofstream outfile(header.filename, ofstream::binary);
   outfile.write(buffer.get(), header.nbytes);
-
-  header.command = cix_command::ACK;
-  memset(header.filename, 0, FILENAME_SIZE);
-  header.nbytes = 0;
+  if (outfile.fail())
+  {
+    header.command = cix_command::NAK;
+    header.nbytes = 1;
+  }
+  else
+  {
+    header.command = cix_command::ACK;
+    memset(header.filename, 0, FILENAME_SIZE);
+    header.nbytes = 0;
+  }
   send_packet(client_sock, &header, sizeof header);
 }
 
@@ -91,7 +96,6 @@ void reply_get(accepted_socket &client_sock, cix_header &header)
     outlog << "Reading " << length << " characters... " << endl;
     // read data as a block:
     file.read(buffer.get(), length);
-    outlog << "read: " << buffer.get() << endl;
 
     cix_header resHeader;
     resHeader.command = cix_command::FILEOUT;
@@ -108,6 +112,23 @@ void reply_get(accepted_socket &client_sock, cix_header &header)
   {
     outlog << "Could not load file: " << header.filename << endl;
   }
+}
+
+void reply_rm(accepted_socket &client_sock, cix_header &header)
+{
+  int res = unlink(header.filename);
+  if (res != 0)
+  {
+    header.command = cix_command::NAK;
+    header.nbytes = res;
+  }
+  else
+  {
+    header.command = cix_command::ACK;
+    header.nbytes = 0;
+  }
+  outlog << "sending header " << header << endl;
+  send_packet(client_sock, &header, sizeof header);
 }
 
 void run_server(accepted_socket &client_sock)
@@ -131,6 +152,9 @@ void run_server(accepted_socket &client_sock)
         break;
       case cix_command::GET:
         reply_get(client_sock, header);
+        break;
+      case cix_command::RM:
+        reply_rm(client_sock, header);
         break;
       default:
         outlog << "invalid client header:" << header << endl;

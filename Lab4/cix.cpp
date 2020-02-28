@@ -28,6 +28,7 @@ unordered_map<string, cix_command> command_map{
     {"ls", cix_command::LS},
     {"put", cix_command::PUT},
     {"get", cix_command::GET},
+    {"rm", cix_command::RM},
 };
 
 static const char help[] = R"||(
@@ -69,7 +70,6 @@ void cix_ls(client_socket &server)
 
 void cix_put(client_socket &server, string &filename)
 {
-  // TODO: errors
 
   ifstream file(filename, ifstream::binary);
   if (file)
@@ -85,7 +85,6 @@ void cix_put(client_socket &server, string &filename)
     outlog << "Reading " << length << " characters... " << endl;
     // read data as a block:
     file.read(buffer.get(), length);
-    outlog << "read: " << buffer.get() << endl;
     cix_header header;
     header.command = cix_command::PUT;
     header.nbytes = length;
@@ -100,6 +99,14 @@ void cix_put(client_socket &server, string &filename)
     recv_packet(server, &header, sizeof header);
 
     outlog << "received header " << header << endl;
+    if (header.command == cix_command::NAK)
+    {
+      outlog << "Could not write " << filename << endl;
+    }
+    else if (header.command == cix_command::ACK)
+    {
+      outlog << "Wrote file " << filename << endl;
+    }
   }
   else
   {
@@ -127,10 +134,28 @@ void cix_get(client_socket &server, string &filename)
     recv_packet(server, buffer.get(), header.nbytes);
     outlog << "received " << header.nbytes << " bytes" << endl;
     buffer[header.nbytes] = '\0';
-    outlog << "recd: " << buffer.get() << endl;
 
     ofstream outfile(filename, ofstream::binary);
     outfile.write(buffer.get(), header.nbytes);
+  }
+}
+
+void cix_rm(client_socket &server, string &filename)
+{
+  cix_header header;
+  header.command = cix_command::RM;
+  strcpy(header.filename, filename.c_str());
+  outlog << "sending header " << header << endl;
+  send_packet(server, &header, sizeof header);
+  recv_packet(server, &header, sizeof header);
+  outlog << "received header " << header << endl;
+  if (header.command == cix_command::NAK)
+  {
+    outlog << "Could not RM file " << filename << endl;
+  }
+  else if (header.command == cix_command::ACK)
+  {
+    outlog << "Sucesfull RM of " << filename << endl;
   }
 }
 
@@ -191,6 +216,9 @@ int main(int argc, char **argv)
         break;
       case cix_command::GET:
         cix_get(server, tokens.at(1));
+        break;
+      case cix_command::RM:
+        cix_rm(server, tokens.at(1));
         break;
       default:
         outlog << line << ": invalid command" << endl;
