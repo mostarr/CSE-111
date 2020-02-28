@@ -23,16 +23,18 @@ using namespace std;
 //    before anything else.
 //
 
-class sys_info {
-   private:
-      static string execname_;
-      static int exit_status_;
-      static void execname (const string& argv0);
-      friend int main (int argc, char** argv);
-   public:
-      static const string& execname ();
-      static void exit_status (int status);
-      static int exit_status ();
+class sys_info
+{
+private:
+  static string execname_;
+  static int exit_status_;
+  static void execname(const string &argv0);
+  friend int main(int argc, char **argv);
+
+public:
+  static const string &execname();
+  static void exit_status(int status);
+  static int exit_status();
 };
 
 //
@@ -40,7 +42,7 @@ class sys_info {
 //    Return the current date, as printed by date(1).
 //
 
-const string datestring ();
+const string datestring();
 
 //
 // split -
@@ -49,9 +51,8 @@ const string datestring ();
 //    Split a pathname, use "/".  To split a shell command, use " ".
 //
 
-list<string> split (const string& line, const string& delimiter);
+list<string> split(const string &line, const string &delimiter);
 
-
 //
 // complain -
 //    Used for starting error messages.  Sets the exit status to
@@ -60,7 +61,7 @@ list<string> split (const string& line, const string& delimiter);
 //       complain() << filename << ": some problem" << endl;
 //
 
-ostream& complain();
+ostream &complain();
 
 //
 // syscall_error -
@@ -69,7 +70,7 @@ ostream& complain();
 //    the reason for the problem.
 //
 
-void syscall_error (const string&);
+void syscall_error(const string &);
 
 //
 // operator<< (list) -
@@ -80,7 +81,7 @@ void syscall_error (const string&);
 //
 
 template <typename item_t>
-ostream& operator<< (ostream& out, const list<item_t>& vec);
+ostream &operator<<(ostream &out, const list<item_t> &vec);
 
 //
 // string to_string (thing) -
@@ -88,7 +89,7 @@ ostream& operator<< (ostream& out, const list<item_t>& vec);
 //
 
 template <typename item_t>
-string to_string (const item_t&);
+string to_string(const item_t &);
 
 //
 // thing from_string (cons string&) -
@@ -96,7 +97,7 @@ string to_string (const item_t&);
 //
 
 template <typename item_t>
-item_t from_string (const string&);
+item_t from_string(const string &);
 
 //
 // Put the RCS Id string in the object file.

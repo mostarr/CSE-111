@@ -28,8 +28,8 @@ ${EXECBIN} : ${OBJECTS}
 	${COMPILECPP} -o $@ ${OBJECTS}
 
 %.o : %.cpp
-	# - ${UTILBIN}/checksource $<
-	# - ${UTILBIN}/cpplint.py.perl $<
+	- ${UTILBIN}/checksource $<
+	- ${UTILBIN}/cpplint.py.perl $<
 	${COMPILECPP} -c $<
 
 ci : ${ALLSOURCES}
