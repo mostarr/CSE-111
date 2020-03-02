@@ -50,12 +50,14 @@ polygon::polygon(const vertex_list &vertices_) : vertices(vertices_)
   DEBUGF('c', this);
 }
 
-rectangle::rectangle(GLfloat width, GLfloat height) : polygon({})
+rectangle::rectangle(GLfloat width, GLfloat height)
+    : polygon(calcVerticies(width, height))
 {
   DEBUGF('c', this << "(" << width << "," << height << ")");
 }
 
-diamond::diamond(GLfloat width, GLfloat height) : polygon({})
+diamond::diamond(GLfloat width, GLfloat height)
+    : polygon(calcVerticies(width, height))
 {
   DEBUGF('c', this << "(" << width << "," << height << ")");
 }
@@ -70,9 +72,33 @@ triangle::triangle(const vertex_list &vertices_) : polygon(vertices_)
   DEBUGF('c', this);
 }
 
-equilateral::equilateral(const vertex_list &vertices_) : triangle(vertices_)
+equilateral::equilateral(const GLfloat width) : triangle(calcVerticies(width))
 {
   DEBUGF('c', this);
+}
+
+vertex_list rectangle::calcVerticies(GLfloat width, GLfloat height)
+{
+  return {vertex{-width / 2, height / 2},
+          vertex{-width / 2, -height / 2},
+          vertex{width / 2, -height / 2},
+          vertex{width / 2, height / 2}};
+}
+
+vertex_list equilateral::calcVerticies(GLfloat width)
+{
+  float height = (width * (sqrt(3) / 2));
+  return {vertex{0, height / 2},
+          vertex{-width / 2, -height / 2},
+          vertex{width / 2, -height / 2}};
+}
+
+vertex_list diamond::calcVerticies(const GLfloat width, const GLfloat height)
+{
+  return {vertex{0, height / 2},
+          vertex{-width / 2, 0},
+          vertex{0, -height / 2},
+          vertex{width / 2, 0}};
 }
 
 void text::draw(const vertex &center, const rgbcolor &color) const

@@ -1,11 +1,16 @@
 define ellipse1 ellipse 100 120
+define diamond1 diamond 100 120
 define circle1 circle 100
 define text1 text Helvetica-18 Test Text
 define poly1 polygon 0 100 0 0 100 0 120 50 100 100
 define tri1 triangle 0 100 0 0 100 0
 define tri2 equilateral 100
+define sq1 square 150
 
+draw green sq1 100 100
+draw blue diamond1 100 100
 draw blue tri2 400 400
+draw white tri1 400 200
 draw blue ellipse1 200 200
 #draw blue poly1 300 100
 draw red circle1 200 200

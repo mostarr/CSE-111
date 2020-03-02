@@ -123,18 +123,24 @@ public:
 
 class rectangle : public polygon
 {
+private:
+  vertex_list calcVerticies(const GLfloat width, const GLfloat height);
+
 public:
-  rectangle(GLfloat width, GLfloat height);
+  rectangle(const GLfloat width, const GLfloat height);
 };
 
 class square : public rectangle
 {
 public:
-  square(GLfloat width);
+  square(const GLfloat width);
 };
 
 class diamond : public polygon
 {
+private:
+  vertex_list calcVerticies(const GLfloat width, const GLfloat height);
+
 public:
   diamond(const GLfloat width, const GLfloat height);
 };
@@ -147,8 +153,11 @@ public:
 
 class equilateral : public triangle
 {
+private:
+  vertex_list calcVerticies(const GLfloat width);
+
 public:
-  equilateral(const vertex_list &vertices);
+  equilateral(const GLfloat width);
 };
 
 ostream &operator<<(ostream &out, const shape &);
