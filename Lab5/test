@@ -1,0 +1,2 @@
+define text1 text Helvetica-10 Test Text
+draw white test1 0 0
