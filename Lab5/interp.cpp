@@ -3,6 +3,8 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <cmath>
+
 using namespace std;
 
 #include <GL/freeglut.h>
@@ -35,6 +37,9 @@ unordered_map<string, interpreter::factoryfn>
         {"polygon", &interpreter::make_polygon},
         {"rectangle", &interpreter::make_rectangle},
         {"square", &interpreter::make_square},
+        {"diamond", &interpreter::make_diamond},
+        {"triangle", &interpreter::make_triangle},
+        {"equilateral", &interpreter::make_equilateral},
     };
 
 interpreter::shape_map interpreter::objmap;
@@ -134,12 +139,25 @@ shape_ptr interpreter::make_polygon(param begin, param end)
   DEBUGF('f', range(begin, end));
   vertex_list verticies;
   vertex v;
+  float totalx = 0.0;
+  float totaly = 0.0;
   for (; begin != end; ++begin)
   {
     v.xpos = stof(begin->c_str());
+    totalx += v.xpos;
     ++begin;
     v.ypos = stof(begin->c_str());
+    totaly += v.ypos;
     verticies.push_back(v);
+  }
+
+  float avgx = totalx / verticies.size();
+  float avgy = totaly / verticies.size();
+
+  for (auto vertex = verticies.begin(); vertex != verticies.end(); ++vertex)
+  {
+    vertex->xpos = vertex->xpos - avgx;
+    vertex->ypos = vertex->ypos - avgy;
   }
   return make_shared<polygon>(verticies);
 }
@@ -147,11 +165,71 @@ shape_ptr interpreter::make_polygon(param begin, param end)
 shape_ptr interpreter::make_rectangle(param begin, param end)
 {
   DEBUGF('f', range(begin, end));
-  return make_shared<rectangle>(GLfloat(), GLfloat());
+  auto width = stof(begin->c_str());
+  ++begin;
+  auto height = stof(begin->c_str());
+  return make_shared<rectangle>(GLfloat(width), GLfloat(height));
 }
 
 shape_ptr interpreter::make_square(param begin, param end)
 {
   DEBUGF('f', range(begin, end));
-  return make_shared<square>(GLfloat());
+  auto width = stof(begin->c_str());
+  return make_shared<square>(GLfloat(width));
+}
+
+shape_ptr interpreter::make_diamond(param begin, param end)
+{
+  DEBUGF('f', range(begin, end));
+  auto width = stof(begin->c_str());
+  ++begin;
+  auto height = stof(begin->c_str());
+  return make_shared<diamond>(GLfloat(width), GLfloat(height));
+}
+
+shape_ptr interpreter::make_triangle(param begin, param end)
+{
+  vertex_list verticies;
+  vertex v;
+  float totalx = 0.0;
+  float totaly = 0.0;
+  for (; begin != end; ++begin)
+  {
+    v.xpos = stof(begin->c_str());
+    totalx += v.xpos;
+    ++begin;
+    v.ypos = stof(begin->c_str());
+    totaly += v.ypos;
+    verticies.push_back(v);
+  }
+
+  float avgx = totalx / verticies.size();
+  float avgy = totaly / verticies.size();
+
+  for (auto vertex = verticies.begin(); vertex != verticies.end(); ++vertex)
+  {
+    vertex->xpos = vertex->xpos - avgx;
+    vertex->ypos = vertex->ypos - avgy;
+  }
+  return make_shared<triangle>(verticies);
+}
+
+shape_ptr interpreter::make_equilateral(param begin, param)
+{
+  vertex_list verticies;
+  float length = stof(begin->c_str());
+  float height = (length * (sqrt(3) / 2));
+  vertex v1;
+  v1.xpos = 0;
+  v1.ypos = height / 2;
+  verticies.push_back(v1);
+  vertex v2;
+  v2.xpos = -length / 2;
+  v2.ypos = -height / 2;
+  verticies.push_back(v2);
+  vertex v3;
+  v3.xpos = length / 2;
+  v3.ypos = -height / 2;
+  verticies.push_back(v3);
+  return make_shared<equilateral>(verticies);
 }

@@ -55,7 +55,22 @@ rectangle::rectangle(GLfloat width, GLfloat height) : polygon({})
   DEBUGF('c', this << "(" << width << "," << height << ")");
 }
 
+diamond::diamond(GLfloat width, GLfloat height) : polygon({})
+{
+  DEBUGF('c', this << "(" << width << "," << height << ")");
+}
+
 square::square(GLfloat width) : rectangle(width, width)
+{
+  DEBUGF('c', this);
+}
+
+triangle::triangle(const vertex_list &vertices_) : polygon(vertices_)
+{
+  DEBUGF('c', this);
+}
+
+equilateral::equilateral(const vertex_list &vertices_) : triangle(vertices_)
 {
   DEBUGF('c', this);
 }
@@ -91,6 +106,18 @@ void ellipse::draw(const vertex &center, const rgbcolor &color) const
 void polygon::draw(const vertex &center, const rgbcolor &color) const
 {
   DEBUGF('d', this << "(" << center << "," << color << ")");
+  glBegin(GL_POLYGON);
+  glLineWidth(4);
+  glColor3ubv(color.ubvec);
+
+  for (auto vertex : vertices)
+  {
+    cout << vertex << endl;
+    glVertex2f(vertex.xpos + center.xpos,
+               vertex.ypos + center.ypos);
+  }
+
+  glEnd();
 }
 
 void shape::show(ostream &out) const
