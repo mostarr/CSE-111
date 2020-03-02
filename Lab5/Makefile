@@ -17,7 +17,7 @@ UTILBIN    = /afs/cats.ucsc.edu/courses/cse111-wm/bin
 
 MODULES    = graphics interp rgbcolor shape debug util main
 CPPSOURCE  = $(wildcard ${MODULES:=.cpp})
-GENFILES   = colors.cppgen
+# GENFILES   = colors.cppgen
 MODFILES   = ${foreach MOD, ${MODULES}, ${MOD}.h ${MOD}.tcc ${MOD}.cpp}
 SOURCES    = ${wildcard ${MODFILES}}
 OTHERS     = mk-colors.perl ${MKFILE} ${DEPFILE}
@@ -34,11 +34,11 @@ ${EXECBIN} : ${OBJECTS}
 
 %.o : %.cpp
 	${COMPILECPP} -c $<
-	- ${UTILBIN}/checksource $<
-	- ${UTILBIN}/cpplint.py.perl $<
+	# - ${UTILBIN}/checksource $<
+	# - ${UTILBIN}/cpplint.py.perl $<
 
 colors.cppgen: mk-colors.perl
-	./mk-colors.perl >colors.cppgen
+	./mk-colors.perl > colors.cppgen
 
 ci : ${ALLSOURCES}
 	${UTILBIN}/cid + ${ALLSOURCES}
