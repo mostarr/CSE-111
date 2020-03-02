@@ -115,7 +115,11 @@ shape_ptr interpreter::make_text(param begin, param end)
 shape_ptr interpreter::make_ellipse(param begin, param end)
 {
   DEBUGF('f', range(begin, end));
-  return make_shared<ellipse>(GLfloat(), GLfloat());
+  auto width = stof(begin->c_str());
+  ++begin;
+  auto height = stof(begin->c_str());
+
+  return make_shared<ellipse>(GLfloat(width), GLfloat(height));
 }
 
 shape_ptr interpreter::make_circle(param begin, param end)

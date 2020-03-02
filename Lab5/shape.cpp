@@ -81,8 +81,8 @@ void ellipse::draw(const vertex &center, const rgbcolor &color) const
   for (size_t point = 0; point < points; ++point)
   {
     GLfloat angle = point * theta;
-    GLfloat xpos = (20 * cos(angle)) + center.xpos;
-    GLfloat ypos = (20 * sin(angle)) + center.ypos;
+    GLfloat xpos = ((dimension.xpos / 2) * cos(angle)) + center.xpos;
+    GLfloat ypos = ((dimension.ypos / 2) * sin(angle)) + center.ypos;
     glVertex2f(xpos, ypos);
   }
   glEnd();
