@@ -217,18 +217,18 @@ shape_ptr interpreter::make_triangle(param begin, param end)
 shape_ptr interpreter::make_equilateral(param begin, param)
 {
   vertex_list verticies;
-  float length = stof(begin->c_str());
-  float height = (length * (sqrt(3) / 2));
+  float sideLength = stof(begin->c_str());
+  float height = (sideLength * (sqrt(3) / 2));
   vertex v1;
   v1.xpos = 0;
   v1.ypos = height / 2;
   verticies.push_back(v1);
   vertex v2;
-  v2.xpos = -length / 2;
+  v2.xpos = -sideLength / 2;
   v2.ypos = -height / 2;
   verticies.push_back(v2);
   vertex v3;
-  v3.xpos = length / 2;
+  v3.xpos = sideLength / 2;
   v3.ypos = -height / 2;
   verticies.push_back(v3);
   return make_shared<equilateral>(verticies);
