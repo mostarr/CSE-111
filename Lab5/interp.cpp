@@ -125,7 +125,8 @@ shape_ptr interpreter::make_ellipse(param begin, param end)
 shape_ptr interpreter::make_circle(param begin, param end)
 {
   DEBUGF('f', range(begin, end));
-  return make_shared<circle>(GLfloat());
+  auto diameter = stof(begin->c_str());
+  return make_shared<circle>(GLfloat(diameter));
 }
 
 shape_ptr interpreter::make_polygon(param begin, param end)

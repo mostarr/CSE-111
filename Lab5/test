@@ -1,4 +1,6 @@
 define ellipse1 ellipse 100 120
+define circle1 circle 100
 define text1 text Helvetica-18 Test Text
 draw red ellipse1 200 200
+draw red circle 200 200
 draw blue text1 200 300
