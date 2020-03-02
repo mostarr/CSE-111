@@ -132,7 +132,16 @@ shape_ptr interpreter::make_circle(param begin, param end)
 shape_ptr interpreter::make_polygon(param begin, param end)
 {
   DEBUGF('f', range(begin, end));
-  return make_shared<polygon>(vertex_list());
+  vertex_list verticies;
+  vertex v;
+  for (; begin != end; ++begin)
+  {
+    v.xpos = stof(begin->c_str());
+    ++begin;
+    v.ypos = stof(begin->c_str());
+    verticies.push_back(v);
+  }
+  return make_shared<polygon>(verticies);
 }
 
 shape_ptr interpreter::make_rectangle(param begin, param end)
