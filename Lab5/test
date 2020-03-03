@@ -7,11 +7,11 @@ define tri1 triangle 0 100 0 0 100 0
 define tri2 equilateral 100
 define sq1 square 150
 
-draw green sq1 100 100
+draw HotPink3 sq1 100 100
 draw blue diamond1 100 100
 draw blue tri2 400 400
 draw white tri1 400 200
 draw blue ellipse1 200 200
+draw red circle1 200 250
 #draw blue poly1 300 100
-draw red circle1 200 200
 draw green text1 200 300

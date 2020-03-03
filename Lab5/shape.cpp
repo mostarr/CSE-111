@@ -138,7 +138,6 @@ void polygon::draw(const vertex &center, const rgbcolor &color) const
 
   for (auto vertex : vertices)
   {
-    cout << vertex << endl;
     glVertex2f(vertex.xpos + center.xpos,
                vertex.ypos + center.ypos);
   }
