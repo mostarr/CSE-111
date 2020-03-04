@@ -21,7 +21,8 @@ private:
 
 public:
   object(shared_ptr<shape>, vertex, rgbcolor);
-  void draw(int num);
+  void draw(size_t num);
+  void outline();
   void move(GLfloat delta_x, GLfloat delta_y);
 };
 

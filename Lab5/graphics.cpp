@@ -20,13 +20,21 @@ object::object(shared_ptr<shape> pshape_, vertex center_,
 {
 }
 
-void object::draw(int num)
+void object::draw(size_t num)
 {
-  glColor4i(255, 255, 255, 1);
-  glRasterPos2f(center.xpos, center.ypos);
-  auto ubytes = reinterpret_cast<const GLubyte *>(to_string(num).c_str());
   pshape->draw(center, color);
-  glutBitmapString(GLUT_BITMAP_HELVETICA_10, ubytes);
+  if (num <= 9)
+  {
+    glColor4i(255, 255, 255, 1);
+    glRasterPos2f(center.xpos, center.ypos);
+    auto ubytes = reinterpret_cast<const GLubyte *>(to_string(num).c_str());
+    glutBitmapString(GLUT_BITMAP_HELVETICA_12, ubytes);
+  }
+}
+
+void object::outline()
+{
+  pshape->outline(center);
 }
 
 void object::move(GLfloat delta_x, GLfloat delta_y)
@@ -98,13 +106,17 @@ void window::entry(int mouse_entered)
 void window::display()
 {
   glClear(GL_COLOR_BUFFER_BIT);
-  int objNum = 0;
+  size_t objNum = 0;
   for (auto &object : window::objects)
   {
-    ++objNum;
     object.draw(objNum);
-    cout << objNum << endl;
+    ++objNum;
   }
+  if (selected_obj < objects.size())
+  {
+    objects.at(selected_obj).outline();
+  }
+
   mus.draw();
   glutSwapBuffers();
 }
@@ -146,39 +158,73 @@ void window::keyboard(GLubyte key, int x, int y)
     break;
   case 'H':
   case 'h':
-    //move_selected_object (
+    if (selected_obj < objects.size())
+    {
+      objects.at(selected_obj).move(-4, 0);
+    }
     break;
   case 'J':
   case 'j':
-    //move_selected_object (
+    if (selected_obj < objects.size())
+    {
+      objects.at(selected_obj).move(4, 0);
+    }
     break;
   case 'K':
   case 'k':
-    //move_selected_object (
+    if (selected_obj < objects.size())
+    {
+      objects.at(selected_obj).move(0, 4);
+    }
     break;
   case 'L':
   case 'l':
-    //move_selected_object (
+    if (selected_obj < objects.size())
+    {
+      objects.at(selected_obj).move(0, -4);
+    }
     break;
   case 'N':
   case 'n':
   case SPACE:
   case TAB:
+    ++selected_obj;
     break;
   case 'P':
   case 'p':
   case BS:
+    --selected_obj;
     break;
   case '0':
+    selected_obj = 0;
+    break;
   case '1':
+    selected_obj = 1;
+    break;
   case '2':
+    selected_obj = 2;
+    break;
   case '3':
+    selected_obj = 3;
+    break;
   case '4':
+    selected_obj = 4;
+    break;
   case '5':
+    selected_obj = 5;
+    break;
   case '6':
+    selected_obj = 6;
+    break;
   case '7':
+    selected_obj = 7;
+    break;
   case '8':
+    selected_obj = 8;
+    break;
   case '9':
+    selected_obj = 9;
+    break;
     //select_object (key - '0');
     break;
   default:

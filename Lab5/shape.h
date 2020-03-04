@@ -53,8 +53,9 @@ public:
   shape &operator=(const shape &) = delete; // Prevent copying.
   shape(shape &&) = delete;                 // Prevent moving.
   shape &operator=(shape &&) = delete;      // Prevent moving.
-  virtual ~shape() {}
+  virtual ~shape(){};
   virtual void draw(const vertex &, const rgbcolor &) const = 0;
+  virtual void outline(const vertex &) const = 0;
   virtual void show(ostream &) const;
 };
 
@@ -78,6 +79,7 @@ protected:
 public:
   text(void *glut_bitmap_font, const string &textdata);
   virtual void draw(const vertex &, const rgbcolor &) const override;
+  virtual void outline(const vertex &) const {};
   virtual void show(ostream &) const override;
 };
 
@@ -93,6 +95,7 @@ protected:
 public:
   ellipse(GLfloat width, GLfloat height);
   virtual void draw(const vertex &, const rgbcolor &) const override;
+  virtual void outline(const vertex &) const override;
   virtual void show(ostream &) const override;
 };
 
@@ -114,6 +117,7 @@ protected:
 public:
   polygon(const vertex_list &vertices);
   virtual void draw(const vertex &, const rgbcolor &) const override;
+  virtual void outline(const vertex &) const override;
   virtual void show(ostream &) const override;
 };
 

@@ -129,9 +129,28 @@ void ellipse::draw(const vertex &center, const rgbcolor &color) const
   glEnd();
 }
 
+void ellipse::outline(const vertex &center) const
+{
+  glLineWidth(4);
+  glBegin(GL_LINE_LOOP);
+  glColor3ubv(rgbcolor(240, 248, 255).ubvec);
+  const size_t points = 30;
+  const GLfloat theta = 2.0 * M_PI / points;
+  for (size_t point = 0; point < points; ++point)
+  {
+    GLfloat angle = point * theta;
+    GLfloat xpos = (((1.25 * dimension.xpos) / 2) * cos(angle)) + center.xpos;
+    GLfloat ypos = (((1.25 * dimension.ypos) / 2) * sin(angle)) + center.ypos;
+    glVertex2f(xpos, ypos);
+  }
+  glEnd();
+}
+
 void polygon::draw(const vertex &center, const rgbcolor &color) const
 {
   DEBUGF('d', this << "(" << center << "," << color << ")");
+
+  // draw shape
   glBegin(GL_POLYGON);
   glLineWidth(4);
   glColor3ubv(color.ubvec);
@@ -141,6 +160,32 @@ void polygon::draw(const vertex &center, const rgbcolor &color) const
     glVertex2f(vertex.xpos + center.xpos,
                vertex.ypos + center.ypos);
   }
+
+  glEnd();
+}
+
+void polygon::outline(const vertex &center) const
+{
+  // draw outline
+  int lineWidth = 10;
+  glLineWidth(lineWidth);
+  glBegin(GL_LINES);
+  glColor3ubv(rgbcolor(240, 248, 255).ubvec);
+
+  vertex lastVertex = vertices.at(0);
+  for (auto vertex : vertices)
+  {
+    glVertex2f(((1.0 * lastVertex.xpos) + center.xpos),
+               ((1.0 * lastVertex.ypos) + center.ypos));
+
+    glVertex2f(((1.0 * vertex.xpos) + center.xpos),
+               ((1.0 * vertex.ypos) + center.ypos));
+    lastVertex = vertex;
+  }
+  glVertex2f(((1.0 * lastVertex.xpos) + center.xpos),
+             ((1.0 * lastVertex.ypos) + center.ypos));
+  glVertex2f(((1.0 * vertices.at(0).xpos) + center.xpos),
+             ((1.0 * vertices.at(0).ypos) + center.ypos));
 
   glEnd();
 }
