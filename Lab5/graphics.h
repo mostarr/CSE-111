@@ -22,7 +22,7 @@ private:
 public:
   object(shared_ptr<shape>, vertex, rgbcolor);
   void draw(size_t num);
-  void outline();
+  void outline(const rgbcolor &border_color, const size_t thicknes);
   void move(GLfloat delta_x, GLfloat delta_y);
 };
 

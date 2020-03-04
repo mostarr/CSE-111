@@ -129,11 +129,11 @@ void ellipse::draw(const vertex &center, const rgbcolor &color) const
   glEnd();
 }
 
-void ellipse::outline(const vertex &center) const
+void ellipse::outline(const vertex &center, const rgbcolor &color, const size_t thicknes) const
 {
-  glLineWidth(4);
+  glLineWidth(thicknes);
   glBegin(GL_LINE_LOOP);
-  glColor3ubv(rgbcolor(240, 248, 255).ubvec);
+  glColor3ubv(color.ubvec);
   const size_t points = 30;
   const GLfloat theta = 2.0 * M_PI / points;
   for (size_t point = 0; point < points; ++point)
@@ -164,13 +164,12 @@ void polygon::draw(const vertex &center, const rgbcolor &color) const
   glEnd();
 }
 
-void polygon::outline(const vertex &center) const
+void polygon::outline(const vertex &center, const rgbcolor &color, const size_t thicknes) const
 {
   // draw outline
-  int lineWidth = 10;
-  glLineWidth(lineWidth);
+  glLineWidth(thicknes);
   glBegin(GL_LINES);
-  glColor3ubv(rgbcolor(240, 248, 255).ubvec);
+  glColor3ubv(color.ubvec);
 
   vertex lastVertex = vertices.at(0);
   for (auto vertex : vertices)

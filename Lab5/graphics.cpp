@@ -35,9 +35,9 @@ void object::draw(size_t num)
   }
 }
 
-void object::outline()
+void object::outline(const rgbcolor &border_color, const size_t thicknes)
 {
-  pshape->outline(center);
+  pshape->outline(center, border_color, thicknes);
 }
 
 void object::move(GLfloat delta_x, GLfloat delta_y)
@@ -117,7 +117,7 @@ void window::display()
   }
   if (selected_obj < objects.size())
   {
-    objects.at(selected_obj).outline();
+    objects.at(selected_obj).outline(border_color, border_thicknes);
   }
 
   mus.draw();
