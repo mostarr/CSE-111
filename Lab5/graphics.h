@@ -57,6 +57,9 @@ private:
   static int height; // in pixels
   static vector<object> objects;
   static size_t selected_obj;
+  static GLfloat moveby;
+  static rgbcolor border_color;
+  static size_t border_thicknes;
   static mouse mus;
 
 private:
@@ -78,6 +81,8 @@ public:
   static void setwidth(int width_) { width = width_; }
   static void setheight(int height_) { height = height_; }
   static void main();
+  static void setMoveBy(const GLfloat moveby);
+  static void setBorder(const rgbcolor &border_color, const size_t border_thicknes);
 };
 
 #endif

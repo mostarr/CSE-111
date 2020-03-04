@@ -12,6 +12,9 @@ int window::width = 640;  // in pixels
 int window::height = 480; // in pixels
 vector<object> window::objects;
 size_t window::selected_obj = 0;
+GLfloat window::moveby = GLfloat(4.0);
+rgbcolor window::border_color = rgbcolor(255, 0, 0);
+size_t window::border_thicknes = 4;
 mouse window::mus;
 
 // Implementation of object functions.
@@ -160,28 +163,28 @@ void window::keyboard(GLubyte key, int x, int y)
   case 'h':
     if (selected_obj < objects.size())
     {
-      objects.at(selected_obj).move(-4, 0);
+      objects.at(selected_obj).move(-moveby, 0);
     }
     break;
   case 'J':
   case 'j':
     if (selected_obj < objects.size())
     {
-      objects.at(selected_obj).move(4, 0);
+      objects.at(selected_obj).move(moveby, 0);
     }
     break;
   case 'K':
   case 'k':
     if (selected_obj < objects.size())
     {
-      objects.at(selected_obj).move(0, 4);
+      objects.at(selected_obj).move(0, moveby);
     }
     break;
   case 'L':
   case 'l':
     if (selected_obj < objects.size())
     {
-      objects.at(selected_obj).move(0, -4);
+      objects.at(selected_obj).move(0, -moveby);
     }
     break;
   case 'N':
@@ -196,36 +199,16 @@ void window::keyboard(GLubyte key, int x, int y)
     --selected_obj;
     break;
   case '0':
-    selected_obj = 0;
-    break;
   case '1':
-    selected_obj = 1;
-    break;
   case '2':
-    selected_obj = 2;
-    break;
   case '3':
-    selected_obj = 3;
-    break;
   case '4':
-    selected_obj = 4;
-    break;
   case '5':
-    selected_obj = 5;
-    break;
   case '6':
-    selected_obj = 6;
-    break;
   case '7':
-    selected_obj = 7;
-    break;
   case '8':
-    selected_obj = 8;
-    break;
   case '9':
-    selected_obj = 9;
-    break;
-    //select_object (key - '0');
+    selected_obj = (key - '0');
     break;
   default:
     cerr << unsigned(key) << ": invalid keystroke" << endl;
@@ -241,22 +224,66 @@ void window::special(int key, int x, int y)
   window::mus.set(x, y);
   switch (key)
   {
-  case GLUT_KEY_LEFT:  //move_selected_object (-1, 0); break;
-  case GLUT_KEY_DOWN:  //move_selected_object (0, -1); break;
-  case GLUT_KEY_UP:    //move_selected_object (0, +1); break;
+  case GLUT_KEY_LEFT: //move_selected_object (-1, 0); break;
+    if (selected_obj < objects.size())
+    {
+      objects.at(selected_obj).move(-moveby, 0);
+    }
+    break;
+  case GLUT_KEY_DOWN: //move_selected_object (0, -1); break;
+    if (selected_obj < objects.size())
+    {
+      objects.at(selected_obj).move(0, -moveby);
+    }
+    break;
+  case GLUT_KEY_UP: //move_selected_object (0, +1); break;
+    if (selected_obj < objects.size())
+    {
+      objects.at(selected_obj).move(0, moveby);
+    }
+    break;
   case GLUT_KEY_RIGHT: //move_selected_object (+1, 0); break;
-  case GLUT_KEY_F1:    //select_object (1); break;
-  case GLUT_KEY_F2:    //select_object (2); break;
-  case GLUT_KEY_F3:    //select_object (3); break;
-  case GLUT_KEY_F4:    //select_object (4); break;
-  case GLUT_KEY_F5:    //select_object (5); break;
-  case GLUT_KEY_F6:    //select_object (6); break;
-  case GLUT_KEY_F7:    //select_object (7); break;
-  case GLUT_KEY_F8:    //select_object (8); break;
-  case GLUT_KEY_F9:    //select_object (9); break;
-  case GLUT_KEY_F10:   //select_object (10); break;
-  case GLUT_KEY_F11:   //select_object (11); break;
-  case GLUT_KEY_F12:   //select_object (12); break;
+    if (selected_obj < objects.size())
+    {
+      objects.at(selected_obj).move(moveby, 0);
+    }
+    break;
+  case GLUT_KEY_F1: //select_object (1); break;
+    selected_obj = 1;
+    break;
+  case GLUT_KEY_F2: //select_object (2); break;
+    selected_obj = 2;
+    break;
+  case GLUT_KEY_F3: //select_object (3); break;
+    selected_obj = 3;
+    break;
+  case GLUT_KEY_F4: //select_object (4); break;
+    selected_obj = 4;
+    break;
+  case GLUT_KEY_F5: //select_object (5); break;
+    selected_obj = 5;
+    break;
+  case GLUT_KEY_F6: //select_object (6); break;
+    selected_obj = 6;
+    break;
+  case GLUT_KEY_F7: //select_object (7); break;
+    selected_obj = 7;
+    break;
+  case GLUT_KEY_F8: //select_object (8); break;
+    selected_obj = 8;
+    break;
+  case GLUT_KEY_F9: //select_object (9); break;
+    selected_obj = 9;
+    break;
+  case GLUT_KEY_F10: //select_object (10); break;
+    selected_obj = 10;
+    break;
+  case GLUT_KEY_F11: //select_object (11); break;
+    selected_obj = 11;
+    break;
+  case GLUT_KEY_F12: //select_object (12); break;
+    selected_obj = 12;
+    break;
   default:
     cerr << unsigned(key) << ": invalid function key" << endl;
     break;
@@ -285,6 +312,17 @@ void window::mousefn(int button, int state, int x, int y)
   window::mus.state(button, state);
   window::mus.set(x, y);
   glutPostRedisplay();
+}
+
+void window::setBorder(const rgbcolor &border_color, const size_t border_thicknes)
+{
+  window::border_color = border_color;
+  window::border_thicknes = border_thicknes;
+}
+
+void window::setMoveBy(const GLfloat moveby)
+{
+  window::moveby = moveby;
 }
 
 void window::main()

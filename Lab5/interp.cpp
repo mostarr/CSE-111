@@ -27,6 +27,8 @@ unordered_map<string, interpreter::interpreterfn>
     interpreter::interp_map{
         {"define", &interpreter::do_define},
         {"draw", &interpreter::do_draw},
+        {"border", &interpreter::do_border},
+        {"moveby", &interpreter::do_moveby},
     };
 
 unordered_map<string, interpreter::factoryfn>
@@ -87,6 +89,23 @@ void interpreter::do_draw(param begin, param end)
   vertex where{from_string<GLfloat>(begin[2]),
                from_string<GLfloat>(begin[3])};
   window::push_back(object(itor->second, where, color));
+}
+
+void interpreter::do_border(param begin, param end)
+{
+  if (end - begin != 2)
+    throw runtime_error("syntax error");
+  rgbcolor color{begin[0]};
+  size_t thicknes{stoul(begin[1])};
+  window::setBorder(color, thicknes);
+}
+
+void interpreter::do_moveby(param begin, param end)
+{
+  if (end - begin != 1)
+    throw runtime_error("syntax error");
+  size_t moveby{stoul(begin[0])};
+  window::setMoveBy(moveby);
 }
 
 shape_ptr interpreter::make_shape(param begin, param end)
