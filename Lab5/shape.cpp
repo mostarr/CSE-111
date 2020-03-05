@@ -110,6 +110,32 @@ void text::draw(const vertex &center, const rgbcolor &color) const
   glutBitmapString(glut_bitmap_font, text_);
 }
 
+void text::outline(const vertex &center, const rgbcolor &color, const size_t thicknes) const
+{
+  size_t width = glutBitmapLength(glut_bitmap_font, reinterpret_cast<const GLubyte *>(textdata.c_str()));
+  size_t height = glutBitmapHeight(glut_bitmap_font);
+  glLineWidth(thicknes);
+  glBegin(GL_LINES);
+  glColor3ubv(color.ubvec);
+  // left vertical line
+  glVertex2f(center.xpos - thicknes, center.ypos - (thicknes * 1.5));
+  glVertex2f(center.xpos - thicknes, center.ypos + height);
+
+  // bottom horizontal line
+  glVertex2f(center.xpos - (thicknes * 1.5), center.ypos - thicknes);
+  glVertex2f(center.xpos + width + (thicknes * 1.5), center.ypos - thicknes);
+
+  // right vertical line
+  glVertex2f(center.xpos + width + thicknes, center.ypos - (thicknes * 1.5));
+  glVertex2f(center.xpos + width + thicknes, center.ypos + height);
+
+  // top horizontal line
+  glVertex2f(center.xpos - (thicknes * 1.5), center.ypos + height);
+  glVertex2f(center.xpos + width + (thicknes * 1.5), center.ypos + height);
+
+  glEnd();
+}
+
 void ellipse::draw(const vertex &center, const rgbcolor &color) const
 {
   DEBUGF('d', this << "(" << center << "," << color << ")");

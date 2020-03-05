@@ -1,12 +1,19 @@
-define sq1 square 150
-define sq2 square 200
-define text text Times-Roman-24 test tl;kjsdhfgkjl
+define text text Fixed-8x13 Test
+define text1 text Fixed-9x15 Test
+define text2 text Helvetica-10 Test
+define text3 text Helvetica-12 Test
+define text4 text Helvetica-18 Test
+define text5 text Times-Roman-10 Test
+define text6 text Times-Roman-24 Test
+
 
 moveby 10
 border green 4
 
-draw HotPink3 sq2 200 200
-#draw HotPink3 sq2 200 400
-#draw HotPink3 sq2 400 400
-#draw HotPink3 sq2 400 200
-draw white text 400 400
+draw white text 10 400
+draw white text1 100 400
+draw white text2 200 400
+draw white text3 300 400
+draw white text4 10 200
+draw white text5 100 200
+draw white text6 200 200
