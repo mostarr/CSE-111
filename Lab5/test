@@ -1,11 +1,12 @@
 define sq1 square 150
 define sq2 square 200
+define text text Times-Roman-24 test tl;kjsdhfgkjl
 
 moveby 10
 border green 4
 
 draw HotPink3 sq2 200 200
-draw HotPink3 sq2 200 400
-draw HotPink3 sq2 400 400
-draw HotPink3 sq2 400 200
-#draw blue sq2 400 200
+#draw HotPink3 sq2 200 400
+#draw HotPink3 sq2 400 400
+#draw HotPink3 sq2 400 200
+draw white text 400 400

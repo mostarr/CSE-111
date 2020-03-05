@@ -26,7 +26,7 @@ object::object(shared_ptr<shape> pshape_, vertex center_,
 void object::draw(size_t num)
 {
   pshape->draw(center, color);
-  if (num <= 9)
+  if (num <= 9 && string(typeid(*pshape).name()).find("text") == string::npos)
   {
     glColor4i(255, 255, 255, 1);
     glRasterPos2f(center.xpos, center.ypos);
@@ -128,11 +128,15 @@ void window::display()
   size_t objNum = 0;
   for (auto &object : window::objects)
   {
-    object.draw(objNum);
+    if (objNum != selected_obj)
+    {
+      object.draw(objNum);
+    }
     ++objNum;
   }
   if (selected_obj < objects.size())
   {
+    objects.at(selected_obj).draw(selected_obj);
     objects.at(selected_obj).outline(border_color, border_thicknes);
   }
 
