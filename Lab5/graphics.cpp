@@ -42,8 +42,24 @@ void object::outline(const rgbcolor &border_color, const size_t thicknes)
 
 void object::move(GLfloat delta_x, GLfloat delta_y)
 {
-  center.xpos += delta_x;
-  center.ypos += delta_y;
+  vertex newCenter{center.xpos + delta_x, center.ypos + delta_y};
+  if (newCenter.xpos < 0)
+  {
+    newCenter.xpos = window::getWidth();
+  }
+  if (newCenter.xpos > window::getWidth())
+  {
+    newCenter.xpos = 0;
+  }
+  if (newCenter.ypos < 0)
+  {
+    newCenter.ypos = window::getHeight();
+  }
+  if (newCenter.ypos > window::getHeight())
+  {
+    newCenter.ypos = 0;
+  }
+  center = newCenter;
 }
 
 // Implementation of mouse functions.

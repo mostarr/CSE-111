@@ -83,6 +83,8 @@ public:
   static void main();
   static void setMoveBy(const GLfloat moveby);
   static void setBorder(const rgbcolor &border_color, const size_t border_thicknes);
+  static int getWidth() { return width; };
+  static int getHeight() { return height; };
 };
 
 #endif
